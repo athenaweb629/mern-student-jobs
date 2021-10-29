@@ -12,13 +12,14 @@ export const validSign = [
 
   check('password', 'password is required')
     .notEmpty(),
-    
-  check('password')
-    .isLength({ min: 6})
-    .withMessage('Password must contain at least 6 characters').matches(/\d/).withMessage('password must contain a number')
-]
 
-export const validLogin = [
+  check('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must contain at least 6 characters').matches(/\d/)
+    .withMessage('password must contain a number'),
+];
+
+export const alidLogin = [
   check('email')
     .isEmail()
     .withMessage('Must be a valid email address'),
@@ -27,17 +28,17 @@ export const validLogin = [
     .notEmpty(),
 
   check('password')
-    .isLength({ min: 6})
-    .withMessage('Password must contain at least 6 characters').matches(/\d/).withMessage('password must contain a number')
-]
-
+    .isLength({ min: 6 })
+    .withMessage('Password must contain at least 6 characters').matches(/\d/)
+    .withMessage('password must contain a number'),
+];
 
 export const forgotPasswordValidator = [
   check('email')
     .not()
     .isEmpty()
     .isEmail()
-    .withMessage('Must be a valid email address')
+    .withMessage('Must be a valid email address'),
 ];
 
 export const resetPasswordValidator = [
@@ -45,5 +46,5 @@ export const resetPasswordValidator = [
     .not()
     .isEmpty()
     .isLength({ min: 6 })
-    .withMessage('Password must be at least  6 characters long')
+    .withMessage('Password must be at least  6 characters long'),
 ];

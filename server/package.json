@@ -2,10 +2,9 @@
   "name": "rwt_student_jobs",
   "version": "1.0.0",
   "description": "Having trouble finding a job after graduating? RITEH Student Jobs is here for you.",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.ts"
   },
   "author": "",
   "license": "ISC",

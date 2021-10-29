@@ -7,28 +7,28 @@ const userSchema = new mongoose.Schema({
     trim: true,
     required: true,
     unique: true,
-    lowercase: true
+    lowercase: true,
   },
   name: {
     type: String,
     trim: true,
-    required: true
+    required: true,
   },
   hashed_password: {
     type: String,
-    required: true
+    required: true,
   },
   salt: String,
   role: {
     type: String,
-    default: 'subscriber'
+    default: 'subscriber',
   },
   resetPasswordLink: {
     data: String,
-    default: ''
-  }}, 
-  { timestamps: true }
-);
+    default: '',
+  },
+},
+{ timestamps: true });
 
 // userSchema
 //   .virtual('password')

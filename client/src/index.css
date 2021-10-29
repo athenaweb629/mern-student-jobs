@@ -1,0 +1,8 @@
+html, #root, body {
+  margin: 0;
+}
+
+@font-face {
+  font-family: 'ProximaNovaSemibold';
+  src: local('ProximaNovaSemibold'), url('./assets/fonts/font.otf') format('truetype');
+}

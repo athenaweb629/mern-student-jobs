@@ -29,8 +29,12 @@ app.use('/api/user', userRouter);
 //* 404 Route
 app.use((req: Request, res: Response) => res.status(404).json({ status: 'Page not found.' }));
 
-if (PORT) {
-  app.listen((PORT), () => console.log(`App listening on port ${PORT}`));
-} else {
-  console.log('No PORT specified. Check your .env file.');
+const startUp = ():void => {
+  try{
+    connectDB().then(() => {
+      app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`))
+    });
+  }catch(e){
+    console.log(e);
+  }
 }

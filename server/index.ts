@@ -29,12 +29,14 @@ app.use('/api/user', userRouter);
 //* 404 Route
 app.use((req: Request, res: Response) => res.status(404).json({ status: 'Page not found.' }));
 
-const startUp = ():void => {
-  try{
-    connectDB().then(() => {
-      app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`))
-    });
-  }catch(e){
-    console.log(e);
-  }
-}
+// const startUp = (): void => {
+//   try{
+//     connectDB().then(() => {
+//       app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`))
+//     });
+//   }catch(e){
+//     console.log(e);
+//   }
+// }
+
+// startUp();

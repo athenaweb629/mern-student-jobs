@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 // import { OAuth2Client } from 'google-auth-library';
 import bcrypt from 'bcrypt';
 import sgMail from '@sendgrid/mail';
+import jwtDecode from 'jwt-decode';
 import User from '../models/user.model';
 
 export const loginController = (req: Request, res: Response) => {
@@ -37,69 +38,73 @@ export const loginController = (req: Request, res: Response) => {
 export const registerController = (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
-  User.findOne({ email }).then((user) => {
-    if (user) res.status(400).json({ email: 'Email already exists' });
-    else {
-      const newUser = new User({
-        email,
-        name,
-        hashed_password: password,
-      });
-
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, (_error, hash) => {
-          if (err) throw err;
-          newUser.hashed_password = hash;
-          newUser.salt = salt;
-          newUser.save()
-            // eslint-disable-next-line no-console
-            .catch((e) => console.log(e));
+  try {
+    User.findOne({ email }).then((user) => {
+      if (user) res.status(400).json({ email: 'Email already exists' });
+      else {
+        const newUser = new User({
+          email,
+          name,
+          hashed_password: password,
         });
-      });
-    }
-  });
 
-  const payload = { email, password };
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt, (_error, hash) => {
+            if (err) throw err;
+            newUser.hashed_password = hash;
+            newUser.salt = salt;
+            newUser.save()
+              // eslint-disable-next-line no-console
+              .catch((e) => console.log(e));
+          });
+        });
 
-  const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+        const payload = { email };
 
-  const emailData = {
-    from: process.env.EMAIL_FROM,
-    to: email,
-    subject: 'Account activation link',
-    html: `
-          <h1>Please use the following to activate your account</h1>
-                  <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
-                  <hr />
-                  <p>This email may containe sensetive information</p>
-                  <p>${process.env.CLIENT_URL}</p>
-      `,
-  };
+        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
 
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const emailData = {
+          from: process.env.EMAIL_FROM,
+          to: email,
+          subject: 'Account activation link',
+          html: `
+            <h1>Please use the following to activate your account</h1>
+                    <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
+                    <hr />
+                    <p>This email may containe sensetive information</p>
+                    <p>${process.env.CLIENT_URL}</p>
+        `,
+        };
 
-  sgMail.send(emailData).then(() => {
-    console.log('Email sent');
-  }).catch((e) => {
-    console.log(e);
-  });
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        sgMail.send(emailData).then(() => {
+          console.log('Email sent');
+        }).catch((e) => {
+          console.log(e);
+        });
+      }
 
-  return res.status(200).json({ message: 'Registration successful' });
+      return res.status(200).json({ message: 'Registration successful' });
+    });
+  } catch (err) {
+    return res.status(400).json({ err });
+  }
+  return res.status(400).json({ message: 'Registration failed, please try again' });
 };
 
 export const confirmUser = (req: Request, res: Response) => {
   const { token } = req.params;
-  console.log(`token jebeni ---> ${token}`);
+
   try {
     jwt.verify(token, process.env.SECRET);
   } catch (e) {
     return res.status(400).json({ e });
   }
 
-  User.updateOne({ token }, { confirmed: true }).then(() => {
-    console.log('User confirmed');
-    return res.status(200).json({ message: 'User confirmed' });
-  });
+  const decoded: any = jwtDecode(token);
+  const { email } = decoded;
+
+  User.updateOne({ email }, { $set: { confirmed: true } }).then(() => res.status(200).json({ message: 'User confirmed' }));
 
   return res.status(400);
 };
@@ -128,7 +133,6 @@ export const resendEmail = (req: Request, res: Response) => {
     };
 
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
     sgMail.send(emailData).then(() => {
       console.log('Email sent');
     }).catch((e) => {
@@ -139,4 +143,57 @@ export const resendEmail = (req: Request, res: Response) => {
   });
 
   return res.status(500);
+};
+
+export const forgotPassword = (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  const payload = { email };
+
+  const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+
+  User.updateOne({ email }, { $set: { resetPasswordToken: token } }).then((user) => {
+    console.log(user);
+  });
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const emailData = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: 'Reset your password',
+    html: `
+        <h1>Please use the following to reset your password</h1>
+                <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
+                <hr />
+                <p>This email may containe sensetive information</p>
+                <p>${process.env.CLIENT_URL}</p>
+    `,
+  };
+
+  sgMail.send(emailData).catch((e) => {
+    console.log(e);
+  });
+
+  return res.status(200).json({ success: true });
+};
+
+// eslint-disable-next-line consistent-return
+export const resetPassword = (req: Request, res: Response) => {
+  const { password } = req.body;
+  const { token } = req.params;
+
+  try {
+    jwt.verify(token, process.env.SECRET);
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(password, salt, (_error, hash) => {
+        if (err) throw err;
+
+        User.updateOne({ token }, { $set: { hashed_password: hash, salt } });
+
+        return res.status(200).json({ message: 'Password has been reset' });
+      });
+    });
+  } catch (e) {
+    return res.status(400).json({ e });
+  }
 };

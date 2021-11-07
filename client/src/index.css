@@ -1,5 +1,6 @@
 html, #root, body {
   margin: 0;
+  background: #F5F5F5;
 }
 
 @font-face {

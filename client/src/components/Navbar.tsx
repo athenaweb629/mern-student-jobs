@@ -1,7 +1,8 @@
 import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
-import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, MenuItem, Menu } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, MenuItem, Menu, Avatar } from '@mui/material';
 import { Search as SearchIcon, AccountCircle, Mail, Notifications, Menu as MenuIcon } from '@mui/icons-material';
+import { avatar } from '../assets/images';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -77,7 +78,7 @@ const Navbar = () => {
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
-            <Mail />
+            <Mail color="primary" />
           </Badge>
         </IconButton>
         <p>Messages</p>
@@ -85,14 +86,14 @@ const Navbar = () => {
       <MenuItem>
         <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
           <Badge badgeContent={17} color="error">
-            <Notifications />
+            <Notifications color="primary" />
           </Badge>
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
       <MenuItem>
         <IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit">
-          <AccountCircle />
+          <AccountCircle color="primary" />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -100,12 +101,15 @@ const Navbar = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, margin: '30px' }}>
+      <AppBar position="static" sx={{ background: '#FFFFFF', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.05)', borderRadius: '20px' }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            RITEH Student Jobs
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar sx={{ mr: 1 }} alt="Avatar" src={avatar} />
+            <Typography variant="h6" noWrap component="div" color="text.primary" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              Nick Ryback
+            </Typography>
+          </Box>
           <Search>
             <SearchWrapper>
               <SearchIcon />
@@ -116,21 +120,21 @@ const Navbar = () => {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
-                <Mail />
+                <Mail color="primary" />
               </Badge>
             </IconButton>
             <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="error">
-                <Notifications />
+                <Notifications color="primary" />
               </Badge>
             </IconButton>
             <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" color="inherit">
-              <AccountCircle />
+              <AccountCircle color="primary" />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton size="large" aria-label="show more" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
-              <MenuIcon />
+              <MenuIcon color="primary" />
             </IconButton>
           </Box>
         </Toolbar>

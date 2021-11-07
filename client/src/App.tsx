@@ -1,11 +1,12 @@
+import React from 'react';
 import { Navbar } from './components';
-import { Login } from './pages';
+import { Main } from './pages';
 
 const App = () => (
-  <>
+  <div>
     <Navbar />
-    <Login />
-  </>
+    <Main />
+  </div>
 );
 
 export default App;

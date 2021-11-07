@@ -1,7 +1,9 @@
 import ReactDOM from 'react-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import App from './App';
+import { Auth } from './pages';
 import './index.css';
 
 const theme = createTheme({
@@ -23,7 +25,12 @@ const theme = createTheme({
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <App />
+    test
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+      </Routes>
+    </BrowserRouter>
   </ThemeProvider>,
   document.getElementById('root'),
 );

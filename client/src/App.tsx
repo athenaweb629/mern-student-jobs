@@ -20,10 +20,10 @@ const App = () => (
     <Navbar />
     <Box sx={{ flexGrow: 1, m: '30px' }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={5} md={4} lg={3}>
           <Item><Sidebar /></Item>
         </Grid>
-        <Grid item xs={12} sm={10}>
+        <Grid item xs={12} sm={7} md={8} lg={9}>
           <Item><Main /></Item>
         </Grid>
       </Grid>

@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
     data: String,
     default: '',
   },
+  confirmed: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
 },
 { timestamps: true });
 

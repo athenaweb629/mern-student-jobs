@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Paper, Box, Grid, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 
@@ -13,6 +13,8 @@ const Copyright = () => (
 );
 
 const Auth = () => {
+  const [isSignup, setIsSignup] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -48,33 +50,18 @@ const Auth = () => {
             <LockOutlined />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            {isSignup ? 'Sign up' : 'Sign in'}
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            {isSignup && (
+              <>
+                <TextField margin="normal" required fullWidth id="firstName" label="First Name" name="firstName" autoComplete="fname" autoFocus />
+                <TextField margin="normal" required fullWidth id="lastName" label="Last Name" name="lastName" autoComplete="lame" />
+              </>
+            )}
+            <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" autoFocus />
+            <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password" />
+            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
@@ -85,9 +72,9 @@ const Auth = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#top" variant="body2">
+                <Button onClick={() => setIsSignup((prevIsSignup) => !prevIsSignup)}>
                   Don't have an account? Sign Up
-                </Link>
+                </Button>
               </Grid>
             </Grid>
             <Copyright />

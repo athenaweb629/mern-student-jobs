@@ -125,8 +125,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
     await User.updateOne({ email }, { $set: { resetPasswordToken: token } });
 
     sendMail('reset', email, token);
-  } catch (error) {
+
     return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(400).json(error);
   }
 };
 

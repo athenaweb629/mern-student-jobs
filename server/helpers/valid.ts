@@ -42,7 +42,7 @@ export const forgotPasswordValidator = [
 ];
 
 export const resetPasswordValidator = [
-  check('newPassword')
+  check('password')
     .not()
     .isEmpty()
     .isLength({ min: 6 })

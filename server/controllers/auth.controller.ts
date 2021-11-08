@@ -3,13 +3,21 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 // import { OAuth2Client } from 'google-auth-library';
 import bcrypt from 'bcrypt';
-import sgMail from '@sendgrid/mail';
+import { validationResult } from 'express-validator';
 import jwtDecode from 'jwt-decode';
+import sendMail from '../helpers/sendMail';
 import User from '../models/user.model';
 
 export const loginController = (req: Request, res: Response) => {
   const { email, password } = req.body;
 
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    console.log(err.mapped());
+    return res.status(400).json(err);
+  }
+
+  // eslint-disable-next-line consistent-return
   User.findOne({ email }).then((user) => {
     if (!user) return res.status(404).json({ message: 'Incorrect credentials' });
 
@@ -30,15 +38,22 @@ export const loginController = (req: Request, res: Response) => {
 
       return res.status(400).json({ message: 'Incorrect credentials' });
     });
-
-    return res.status(500);
   });
+
+  return res.status(500);
 };
 
+// eslint-disable-next-line consistent-return
 export const registerController = (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return res.status(400).json(err);
+  }
+
   try {
+    // eslint-disable-next-line consistent-return
     User.findOne({ email }).then((user) => {
       if (user) res.status(400).json({ email: 'Email already exists' });
       else {
@@ -48,9 +63,9 @@ export const registerController = (req: Request, res: Response) => {
           hashed_password: password,
         });
 
-        bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.genSalt(10, (error, salt) => {
           bcrypt.hash(password, salt, (_error, hash) => {
-            if (err) throw err;
+            if (error) throw error;
             newUser.hashed_password = hash;
             newUser.salt = salt;
             newUser.save()
@@ -60,36 +75,17 @@ export const registerController = (req: Request, res: Response) => {
         });
 
         const payload = { email };
-
         const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+        sendMail('activate', email, token);
 
-        const emailData = {
-          from: process.env.EMAIL_FROM,
-          to: email,
-          subject: 'Account activation link',
-          html: `
-            <h1>Please use the following to activate your account</h1>
-                    <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
-                    <hr />
-                    <p>This email may containe sensetive information</p>
-                    <p>${process.env.CLIENT_URL}</p>
-        `,
-        };
-
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        sgMail.send(emailData).then(() => {
-          console.log('Email sent');
-        }).catch((e) => {
-          console.log(e);
-        });
+        return res.status(200).json({ message: 'Registration successful' });
       }
-
-      return res.status(200).json({ message: 'Registration successful' });
     });
-  } catch (err) {
-    return res.status(400).json({ err });
+  } catch (e) {
+    return res.status(400).json(e);
   }
-  return res.status(400).json({ message: 'Registration failed, please try again' });
+
+  // return res.status(400).json({ message: 'Registration failed, please try again' });
 };
 
 export const confirmUser = (req: Request, res: Response) => {
@@ -98,7 +94,7 @@ export const confirmUser = (req: Request, res: Response) => {
   try {
     jwt.verify(token, process.env.SECRET);
   } catch (e) {
-    return res.status(400).json({ e });
+    return res.status(400).json(e);
   }
 
   const decoded: any = jwtDecode(token);
@@ -116,28 +112,8 @@ export const resendEmail = (req: Request, res: Response) => {
     if (!user) return res.status(400).json({ message: 'User does not exist' });
 
     const payload = { email };
-
     const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
-
-    const emailData = {
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: 'Account activation link',
-      html: `
-          <h1>Please use the following to activate your account</h1>
-                  <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
-                  <hr />
-                  <p>This email may containe sensetive information</p>
-                  <p>${process.env.CLIENT_URL}</p>
-      `,
-    };
-
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    sgMail.send(emailData).then(() => {
-      console.log('Email sent');
-    }).catch((e) => {
-      console.log(e);
-    });
+    sendMail('activate', email, token);
 
     return res.status(200).json({ message: 'Reconfirmation mail sent' });
   });
@@ -148,31 +124,17 @@ export const resendEmail = (req: Request, res: Response) => {
 export const forgotPassword = (req: Request, res: Response) => {
   const { email } = req.body;
 
-  const payload = { email };
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return res.status(400).json(err);
+  }
 
+  const payload = { email };
   const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
 
-  User.updateOne({ email }, { $set: { resetPasswordToken: token } }).then((user) => {
-    console.log(user);
-  });
+  User.updateOne({ email }, { $set: { resetPasswordToken: token } });
 
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const emailData = {
-    from: process.env.EMAIL_FROM,
-    to: email,
-    subject: 'Reset your password',
-    html: `
-        <h1>Please use the following to reset your password</h1>
-                <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
-                <hr />
-                <p>This email may containe sensetive information</p>
-                <p>${process.env.CLIENT_URL}</p>
-    `,
-  };
-
-  sgMail.send(emailData).catch((e) => {
-    console.log(e);
-  });
+  sendMail('reset', email, token);
 
   return res.status(200).json({ success: true });
 };
@@ -182,13 +144,24 @@ export const resetPassword = (req: Request, res: Response) => {
   const { password } = req.body;
   const { token } = req.params;
 
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return res.status(400).json(err);
+  }
+
   try {
     jwt.verify(token, process.env.SECRET);
-    bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.genSalt(10, (e, salt) => {
       bcrypt.hash(password, salt, (_error, hash) => {
-        if (err) throw err;
+        if (e) throw e;
 
-        User.updateOne({ token }, { $set: { hashed_password: hash, salt } });
+        User.updateOne({ token }, {
+          $set: {
+            hashed_password: hash,
+            salt,
+            resetPasswordToken: '',
+          },
+        });
 
         return res.status(200).json({ message: 'Password has been reset' });
       });

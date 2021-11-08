@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 import express, { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 
 import connectDB from './helpers/connectDB';
 import userRouter from './routes/user.route';
@@ -29,14 +28,14 @@ app.use('/api/user', userRouter);
 //* 404 Route
 app.use((req: Request, res: Response) => res.status(404).json({ status: 'Page not found.' }));
 
-const startUp = (): void => {
+const initializeApp = async (): Promise<void> => {
   try {
-    connectDB().then(() => {
-      app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`));
-    });
+    await connectDB();
+
+    app.listen(PORT, () => console.log(`Backend listening on port ${PORT}`));
   } catch (e) {
     console.log(e);
   }
 };
 
-startUp();
+initializeApp();

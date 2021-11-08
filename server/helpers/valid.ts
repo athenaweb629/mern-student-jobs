@@ -1,6 +1,6 @@
 import { check } from 'express-validator';
 
-export const validSign = [
+export const validSignUp = [
   check('name', 'Name is required')
     .notEmpty()
     .isLength({ min: 4, max: 32 })
@@ -19,7 +19,7 @@ export const validSign = [
     .withMessage('password must contain a number'),
 ];
 
-export const alidLogin = [
+export const validLogin = [
   check('email')
     .isEmail()
     .withMessage('Must be a valid email address'),
@@ -42,7 +42,7 @@ export const forgotPasswordValidator = [
 ];
 
 export const resetPasswordValidator = [
-  check('newPassword')
+  check('password')
     .not()
     .isEmpty()
     .isLength({ min: 6 })

@@ -14,6 +14,22 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 
+interface TypeForm {
+  firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
+	confirmPassword: string;
+}
+
+const initialState: TypeForm = {
+	firstName: '',
+	lastName: '',
+	email: '',
+	password: '',
+	confirmPassword: ''
+};
+
 const Copyright = () => (
 	<Typography variant="body2" color="text.secondary" align="center">
 		{'Copyright © '}
@@ -26,18 +42,16 @@ const Copyright = () => (
 
 const Auth = () => {
 	const [isSignup, setIsSignup] = useState(false);
+	const [form, setForm] = useState(initialState);
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
-		const data = new FormData(event.currentTarget);
-		// eslint-disable-next-line no-console
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
-		});
+		console.log(form);
 	};
 
+	const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
+	};
 	return (
 		<Grid container component="main" sx={{ height: '100vh' }}>
 			<CssBaseline />
@@ -75,7 +89,7 @@ const Auth = () => {
 					<Box
 						component="form"
 						noValidate
-						onSubmit={handleSubmit}
+						onSubmit={onSubmit}
 						sx={{ mt: 1 }}
 					>
 						{isSignup && (
@@ -89,6 +103,7 @@ const Auth = () => {
 									name="firstName"
 									autoComplete="fname"
 									autoFocus
+									onChange={onChange}
 								/>
 								<TextField
 									margin="normal"
@@ -98,6 +113,7 @@ const Auth = () => {
 									label="Last Name"
 									name="lastName"
 									autoComplete="lame"
+									onChange={onChange}
 								/>
 							</>
 						)}
@@ -110,6 +126,7 @@ const Auth = () => {
 							name="email"
 							autoComplete="email"
 							autoFocus
+							onChange={onChange}
 						/>
 						<TextField
 							margin="normal"
@@ -120,6 +137,7 @@ const Auth = () => {
 							type="password"
 							id="password"
 							autoComplete="current-password"
+							onChange={onChange}
 						/>
 						<FormControlLabel
 							control={<Checkbox value="remember" color="primary" />}

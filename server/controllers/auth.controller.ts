@@ -82,7 +82,8 @@ export const confirmUser = async (req: Request, res: Response) => {
     return res.status(400).json(e);
   }
 
-  const { email } = jwtDecode(token);
+  const decoded: any = jwtDecode(token);
+  const { email } = decoded;
 
   try {
     await User.updateOne({ email }, { $set: { confirmed: true } });

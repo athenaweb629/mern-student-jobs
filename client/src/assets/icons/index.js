@@ -6,10 +6,10 @@ import work from './Frame 57.png';
 import notifications from './Frame 11.png';
 
 export {
-  home,
-  messaging,
-  network,
-  jobs,
-  work,
-  notifications,
+	home,
+	messaging,
+	network,
+	jobs,
+	work,
+	notifications,
 };

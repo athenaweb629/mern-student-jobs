@@ -7,30 +7,31 @@ import { Auth } from './pages';
 import './index.css';
 
 const theme = createTheme({
-  typography: {
-    fontFamily: 'ProximaNovaSemibold',
-  },
-  palette: {
-    text: {
-      primary: '#1b1d1f',
-    },
-    primary: {
-      main: '#0058a2',
-    },
-    secondary: {
-      main: '#e1bb00',
-    },
-  },
+	typography: {
+		fontFamily: 'ProximaNovaSemibold',
+	},
+	palette: {
+		text: {
+			primary: '#1b1d1f',
+		},
+		primary: {
+			main: '#0058a2',
+		},
+		secondary: {
+			main: '#e1bb00',
+		},
+	},
 });
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
-    </BrowserRouter>
-  </ThemeProvider>,
-  document.getElementById('root'),
+	<ThemeProvider theme={theme}>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<App />} />
+				<Route path="/login" element={<Auth />} />
+				<Route path="/register" element={<Auth />} />
+			</Routes>
+		</BrowserRouter>
+	</ThemeProvider>,
+	document.getElementById('root'),
 );

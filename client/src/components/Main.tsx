@@ -1,7 +1,7 @@
 const Main = () => (
-  <div>
-    Main
-  </div>
+	<div>
+		Main
+	</div>
 );
 
 export default Main;

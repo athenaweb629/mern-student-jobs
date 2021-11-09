@@ -6,7 +6,7 @@ import { Main } from './pages';
 const App = () => {
 	const isLoggedIn = false;
 
-	if (!isLoggedIn) return <Navigate to="/auth" />;
+	if (!isLoggedIn) return <Navigate to="/login" />;
 
 	return (
 		<div>

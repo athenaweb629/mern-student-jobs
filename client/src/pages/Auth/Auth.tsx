@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Input from './Input';
 
@@ -20,18 +21,10 @@ const initialState: TypeForm = {
 	confirmPassword: ''
 };
 
-const backgroundImageStyles = {
-	emailbackgroundImage: 'url(https://source.unsplash.com/random)',
-	backgroundRepeat: 'no-repeat',
-	backgroundColor: (t: any) => (t.palette.mode === 'light'
-		? t.palette.grey[50]
-		: t.palette.grey[900]),
-	backgroundSize: 'cover',
-	backgroundPosition: 'center'
-};
-
 const Auth = () => {
-	const [isSignup, setIsSignup] = useState(false);
+	const location = useLocation();
+	const navigate = useNavigate();
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = useState(initialState);
 	const [showPassword, setShowPassword] = useState(false);
 	const handleShowPassword = () => setShowPassword(!showPassword);
@@ -47,7 +40,21 @@ const Auth = () => {
 	return (
 		<Grid container component="main" sx={{ height: '100vh' }}>
 			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} sx={backgroundImageStyles} />
+			<Grid
+				item
+				xs={false}
+				sm={4}
+				md={7}
+				sx={{
+					backgroundImage: 'url(https://source.unsplash.com/random)',
+					backgroundRepeat: 'no-repeat',
+					backgroundColor: (t) => (t.palette.mode === 'light'
+						? t.palette.grey[50]
+						: t.palette.grey[900]),
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}
+			/>
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -76,7 +83,10 @@ const Auth = () => {
 								<Button>Forgot password?</Button>
 							</Grid>
 							<Grid item>
-								<Button onClick={() => setIsSignup((prevIsSignup) => !prevIsSignup)}>
+								<Button onClick={() => {
+									navigate(isSignup ? '/login' : '/register');
+									setIsSignup((prevIsSignup) => !prevIsSignup);
+								}}>
 									{ isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up" }
 								</Button>
 							</Grid>

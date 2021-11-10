@@ -1,7 +1,9 @@
 import ReactDOM from 'react-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
+import { store } from './app/store';
 import App from './App';
 import { Auth } from './pages';
 import './index.css';
@@ -25,13 +27,15 @@ const theme = createTheme({
 
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<App />} />
-				<Route path="/login" element={<Auth />} />
-				<Route path="/register" element={<Auth />} />
-			</Routes>
-		</BrowserRouter>
+		<Provider store={store}>
+			<BrowserRouter>
+				<Routes>
+					<Route path='/' element={<App />} />
+					<Route path='/login' element={<Auth />} />
+					<Route path='/register' element={<Auth />} />
+				</Routes>
+			</BrowserRouter>
+		</Provider>
 	</ThemeProvider>,
-	document.getElementById('root'),
+	document.getElementById('root')
 );

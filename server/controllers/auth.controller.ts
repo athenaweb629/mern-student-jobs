@@ -28,7 +28,7 @@ export const loginController = async (req: Request, res: Response) => {
 
       res.cookie('token', token, { httpOnly: true });
 
-      return res.status(200).json({ message: 'Login successful', success: true, token });
+      return res.status(200).json({ message: 'Login successful', success: true, token, user });
     }
 
     return res.status(400).json({ message: 'Incorrect credentials' });

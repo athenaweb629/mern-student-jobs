@@ -92,7 +92,7 @@ const Auth = () => {
 							try {
 								const user = await login(form).unwrap();
 								dispatch(setCredentials(user));
-								navigate('../', { replace: true });
+								navigate('/', { replace: true });
 							} catch (err) {
 								<Snackbar autoHideDuration={6000}>
 									<Alert severity='error' sx={{ width: '100%' }}>

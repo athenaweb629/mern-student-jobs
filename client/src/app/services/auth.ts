@@ -5,12 +5,6 @@ import { RootState } from '../store';
 export interface User {
 	firstName: string;
 	lastName: string;
-}
-
-export interface UserResponse {
-	user: User;
-	token: string;
-	message: string,
 	success: boolean;
 }
 
@@ -21,7 +15,7 @@ export interface LoginRequest {
 
 export const api = createApi({
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'http://localhost:5000',
+		baseUrl: 'http://localhost:5000/api',
 		prepareHeaders: (headers, { getState }) => {
 			const { token } = (getState() as RootState).auth;
 
@@ -31,9 +25,9 @@ export const api = createApi({
 		},
 	}),
 	endpoints: (builder) => ({
-		login: builder.mutation<UserResponse, LoginRequest>({
+		login: builder.mutation<User, LoginRequest>({
 			query: (credentials) => ({
-				url: '/login',
+				url: '/user/login',
 				method: 'POST',
 				body: credentials,
 			}),

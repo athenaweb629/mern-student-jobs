@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import { Navbar } from './components';
 import { Main } from './pages';
+import { selectCurrentUser } from './features/auth/authSlice';
 
 const App = () => {
-	const isLoggedIn = false;
+	const user = useSelector(selectCurrentUser);
 
-	if (!isLoggedIn) return <Navigate to="/login" />;
+	if (user?.success) return <Navigate to='/' />;
 
 	return (
 		<div>

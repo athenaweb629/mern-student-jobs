@@ -6,7 +6,6 @@ import type { RootState } from '../../app/store';
 type AuthState = {
 	user: User | null;
 	token: User | null;
-
 };
 
 const slice = createSlice({
@@ -15,10 +14,12 @@ const slice = createSlice({
 	reducers: {
 		setCredentials: (state, { payload } : PayloadAction<User>) => {
 			state.user = payload;
+
 			localStorage.setItem('user', JSON.stringify(payload));
 		},
 		logout: (state) => {
 			state.user = null;
+
 			localStorage.removeItem('user');
 		},
 	},

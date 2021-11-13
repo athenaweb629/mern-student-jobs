@@ -36,7 +36,6 @@ export const loginController = async (req: Request, res: Response) => {
 
 			res.cookie('token', token, { httpOnly: true });
 
-			console.log('BREAKPOINT');
 			return res.send(user);
 		}
 

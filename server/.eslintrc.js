@@ -11,7 +11,7 @@ module.exports = {
 	},
 	plugins: ['@typescript-eslint'],
 	rules: {
-		indent: [2, 'tab', { SwitchCase: 1, VariableDeclarator: 1 }],
+		indent: [4, 'space', { SwitchCase: 1, VariableDeclarator: 1 }],
 		'import/no-unresolved': 0,
 		'import/extensions': 0,
 		'linebreak-style': 0,

@@ -3,11 +3,11 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
-import { store } from './app/store';
-import App from './App';
-import { Auth } from './pages';
-import './index.css';
 import PrivateRoute from './utils/PrivateRoute';
+import { store } from './app/store';
+import { Auth } from './pages';
+import App from './App';
+import './index.css';
 
 const theme = createTheme({
 	typography: {

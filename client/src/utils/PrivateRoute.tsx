@@ -1,9 +1,11 @@
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import useAuth from '../hooks/userAuth';
 
-const PrivateRoute = ({ ...routeProps }: RouteProps) => {
+import useAuth from '../hooks/useAuth';
+
+const PrivateRoute = (props: RouteProps) => {
 	const { user } = useAuth();
-	if (user) return <Route {...routeProps} />;
+
+	if (user) return <Route {...props} />;
 
 	return <Redirect to='/login' />;
 };

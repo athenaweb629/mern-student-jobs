@@ -1,54 +1,57 @@
-import React, { useState } from 'react';
-import {
-	Avatar,
-	Button,
-	CssBaseline,
-	Paper,
-	Box,
-	Grid,
-	Typography,
-	Snackbar,
-	Alert,
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, Snackbar, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../features/auth/authSlice';
 
-// import { ProtectedComponent } from './ProtectedComponent';
-import { useLoginMutation } from '../../app/services/auth';
-import type { LoginRequest } from '../../app/services/auth';
+import { setCredentials } from '../../features/auth/authSlice';
+import { useLoginMutation, LoginRequest } from '../../app/services/auth';
+import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 
 const Auth = () => {
+	const { user: isUserLoggedIn } = useAuth();
+	const [login] = useLoginMutation();
 	const dispatch = useDispatch();
-	const history = useHistory();
 	const location = useLocation();
-	const [isSignup, setIsSignup] = useState(
-		!location.pathname.includes('login')
-	);
-	const [form, setForm] = React.useState<LoginRequest>({
-		username: '',
-		password: '',
-	});
+	const history = useHistory();
+
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
+	const [form, setForm] = React.useState<LoginRequest>({ username: '', password: '', });
 	const [showPassword, setShowPassword] = useState(false);
-	const handleShowPassword = () => setShowPassword(!showPassword);
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	useEffect(() => {
+		if (isUserLoggedIn) history.push('/');
+	}, []);
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-	};
-	/* const handleClose = (reason?: string) => {
-		if (reason === 'clickaway') {
-			return;
-		}
 
-		setOpen(false);
-	}; */
+		try {
+			const user = await login(form).unwrap();
+
+			dispatch(setCredentials(user));
+
+			history.push('/');
+		} catch (err) {
+			// TODO: Napraviti da ovo radi
+			<Snackbar autoHideDuration={6000}>
+				<Alert severity='error' sx={{ width: '100%' }}>
+					Error!
+				</Alert>
+			</Snackbar>;
+		}
+	};
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};
 
-	const [login] = useLoginMutation();
+	const changeAuthType = () => {
+		history.push(isSignup ? '/login' : '/register');
+
+		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
+	};
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
@@ -71,13 +74,7 @@ const Auth = () => {
 			/>
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
-					sx={{
-						my: 8,
-						mx: 4,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}>
+					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
@@ -88,59 +85,17 @@ const Auth = () => {
 						component='form'
 						noValidate
 						onSubmit={handleSubmit}
-						onClick={async () => {
-							try {
-								const user = await login(form).unwrap();
-								dispatch(setCredentials(user));
-								history.push('/');
-							} catch (err) {
-								<Snackbar autoHideDuration={6000}>
-									<Alert severity='error' sx={{ width: '100%' }}>
-										Error!
-									</Alert>
-								</Snackbar>;
-							}
-						}}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
 								<>
-									<Input
-										name='firstName'
-										label='First Name'
-										handleChange={handleChange}
-										autoFocus
-										half
-									/>
-									<Input
-										name='lastName'
-										label='Last Name'
-										handleChange={handleChange}
-										half
-									/>
+									<Input name='firstName' label='First Name' handleChange={handleChange} autoFocus half />
+									<Input name='lastName' label='Last Name' handleChange={handleChange} half />
 								</>
 							)}
-							<Input
-								name='email'
-								label='Email Address'
-								handleChange={handleChange}
-								type='email'
-							/>
-							<Input
-								name='password'
-								label='Password'
-								handleChange={handleChange}
-								type={showPassword ? 'text' : 'password'}
-								handleShowPassword={handleShowPassword}
-							/>
-							{isSignup && (
-								<Input
-									name='confirmPassword'
-									label='Repeat Password'
-									handleChange={handleChange}
-									type='password'
-								/>
-							)}
+							<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} type='password' />}
 						</Grid>
 						<Button
 							type='submit'
@@ -155,13 +110,8 @@ const Auth = () => {
 							</Grid>
 							<Grid item>
 								<Button
-									onClick={() => {
-										history.push(isSignup ? '/login' : '/register');
-										setIsSignup((prevIsSignup) => !prevIsSignup);
-									}}>
-									{isSignup
-										? 'Already have an account? Sign in'
-										: "Don't have an account? Sign Up"}
+									onClick={changeAuthType}>
+									{isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up"}
 								</Button>
 							</Grid>
 						</Grid>

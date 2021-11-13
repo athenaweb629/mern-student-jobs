@@ -12,7 +12,7 @@ const Item = styled(Paper)(({ theme }) => ({
 	boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.05)',
 	borderRadius: '20px',
 }));
-/*  */
+
 const Main = () => (
 	<Box sx={{ flexGrow: 1, m: '30px' }}>
 		<Grid container spacing={3}>

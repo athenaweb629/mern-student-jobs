@@ -143,28 +143,29 @@ export const forgotPassword = async (req: Request, res: Response) => {
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
-	const { password } = req.body;
-	const { token } = req.params;
+  const { password } = req.body;
+  const { token } = req.params;
+  let newPassword: any;
+  let newSalt: any;
 
-	const err = validationResult(req);
-	if (!err.isEmpty()) return res.status(400).json(err);
+  const err = validationResult(req);
+  if (!err.isEmpty()) return res.status(400).json(err);
 
-	try {
-		await jwt.verify(token, process.env.SECRET);
+  try {
+    await jwt.verify(token, process.env.SECRET);
 
-		bcrypt.genSalt(10, (e, salt) => {
-			bcrypt.hash(password, salt, (_error, hash) => {
-				if (e) throw e;
+    bcrypt.genSalt(10, async (e, salt: string) => {
+      bcrypt.hash(password, salt, async (_error, hash: string) => {
+        if (e) throw e;
+        newPassword = hash;
+        newSalt = salt;
 
-				User.updateOne(
-					{ token },
-					{ $set: { password: hash, salt, resetPasswordToken: '' } }
-				);
+        await User.updateOne({ token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
+      });
+    });
 
-				return res.status(200).json({ message: 'Password has been reset' });
-			});
-		});
-	} catch (e) {
-		return res.status(400).json(e);
-	}
+    return res.status(200).json({ message: 'Password has been reset' });
+  } catch (e) {
+    return res.status(400).json(e);
+  }
 };

@@ -11,7 +11,7 @@ import {
 	Alert,
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../../features/auth/authSlice';
 
@@ -22,7 +22,7 @@ import Input from './Input';
 
 const Auth = () => {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
+	const history = useHistory();
 	const location = useLocation();
 	const [isSignup, setIsSignup] = useState(
 		!location.pathname.includes('login')
@@ -92,7 +92,7 @@ const Auth = () => {
 							try {
 								const user = await login(form).unwrap();
 								dispatch(setCredentials(user));
-								navigate('/', { replace: true });
+								history.push('/');
 							} catch (err) {
 								<Snackbar autoHideDuration={6000}>
 									<Alert severity='error' sx={{ width: '100%' }}>
@@ -156,7 +156,7 @@ const Auth = () => {
 							<Grid item>
 								<Button
 									onClick={() => {
-										navigate(isSignup ? '/login' : '/register');
+										history.push(isSignup ? '/login' : '/register');
 										setIsSignup((prevIsSignup) => !prevIsSignup);
 									}}>
 									{isSignup

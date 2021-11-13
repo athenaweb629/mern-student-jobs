@@ -19,7 +19,9 @@ export const api = createApi({
 		prepareHeaders: (headers, { getState }) => {
 			const { token } = (getState() as RootState).auth;
 
-			if (token) headers.set('authorization', `Bearer ${token}`);
+			if (token) {
+				headers.set('authorization', `Bearer ${token}`);
+			}
 
 			return headers;
 		},

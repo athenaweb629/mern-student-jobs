@@ -5,20 +5,26 @@ import type { RootState } from '../../app/store';
 
 type AuthState = {
 	user: User | null;
-	token: string | null;
+	token: User | null;
+
 };
 
 const slice = createSlice({
 	name: 'auth',
-	initialState: { user: null, token: null } as AuthState,
+	initialState: { user: null } as AuthState,
 	reducers: {
-		setCredentials: (state, action: PayloadAction<User>) => {
-			state.user = action.payload;
+		setCredentials: (state, { payload } : PayloadAction<User>) => {
+			state.user = payload;
+			localStorage.setItem('user', JSON.stringify(payload));
+		},
+		logout: (state) => {
+			state.user = null;
+			localStorage.removeItem('user');
 		},
 	},
 });
 
-export const { setCredentials } = slice.actions;
+export const { setCredentials, logout } = slice.actions;
 
 export default slice.reducer;
 

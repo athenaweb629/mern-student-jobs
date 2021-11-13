@@ -1,8 +1,11 @@
 import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, MenuItem, Menu, Avatar } from '@mui/material';
-import { Search as SearchIcon, AccountCircle, Mail, Notifications, Menu as MenuIcon } from '@mui/icons-material';
+import { Search as SearchIcon, AccountCircle, Mail, Notifications, Menu as MenuIcon, Logout } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { avatar } from '../assets/images';
+import { logout } from '../features/auth/authSlice';
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -50,6 +53,9 @@ const Navbar = () => {
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const handleMobileMenuClose = () => {
 		setMobileMoreAnchorEl(null);
@@ -131,10 +137,18 @@ const Navbar = () => {
 						<IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" color="inherit">
 							<AccountCircle color="primary" />
 						</IconButton>
+						<IconButton size="large" aria-label="logout" color="inherit" onClick={() => { dispatch(logout()); history.push('/login'); }}>
+							<Logout color="primary" />
+						</IconButton>
 					</Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton size="large" aria-label="show more" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
 							<MenuIcon color="primary" />
+						</IconButton>
+					</Box>
+					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+						<IconButton size="large" aria-label="logout" color="inherit" onClick={() => { dispatch(logout()); history.push('/login'); }}>
+							<Logout color="primary" />
 						</IconButton>
 					</Box>
 				</Toolbar>

@@ -30,7 +30,7 @@ export const loginController = async (req: Request, res: Response) => {
 		}
 
 		if (isMatch) {
-			const token = jwt.sign({ email, password }, process.env.SECRET, {
+			const token = jwt.sign({ email }, process.env.SECRET, {
 				expiresIn: '30m',
 			});
 

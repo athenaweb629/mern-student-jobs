@@ -15,7 +15,7 @@ export interface LoginRequest {
 
 export const api = createApi({
 	baseQuery: fetchBaseQuery({
-		baseUrl: 'http://localhost:5000/api',
+		baseUrl: 'localhost:5000/api',
 		prepareHeaders: (headers, { getState }) => {
 			const { token } = (getState() as RootState).auth;
 

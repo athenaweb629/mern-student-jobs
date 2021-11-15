@@ -8,6 +8,7 @@ const connectDB = async () => {
 
     console.log(`MongoDB Connected: ${connection.host}`);
   } catch (error) {
+    console.log(error);
     console.log('Couldn\'t connect to MongoDB, check your .env file.');
   }
 };

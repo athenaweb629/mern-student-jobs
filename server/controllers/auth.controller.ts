@@ -24,19 +24,17 @@ export const loginController = async (req: Request, res: Response) => {
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (isMatch && user.confirmed === false) {
-			return res
-				.status(400)
-				.json({ message: 'Please confirm your account first' });
+			return res.status(400).json({ message: 'Please confirm your account first' });
 		}
 
 		if (isMatch) {
-			const token = jwt.sign({ email }, process.env.SECRET, {
-				expiresIn: '30m',
-			});
+			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '30m' }); 
 
 			res.cookie('token', token, { httpOnly: true });
 
-			return res.send(user);
+			return res.send({ 
+				email: user.email
+			});
 		}
 
 		return res.status(400).json({ message: 'Incorrect credentials' });

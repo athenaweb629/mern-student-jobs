@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
+import path from './constants/path';
 import PrivateRoute from './utils/PrivateRoute';
 import { store } from './app/store';
 import { Auth } from './pages';
@@ -31,9 +32,9 @@ ReactDOM.render(
 		<Provider store={store}>
 			<BrowserRouter>
 				<Switch>
-					<PrivateRoute exact path='/' component={App} />
-					<Route exact path='/login' component={Auth} />
-					<Route exact path='/register' component={Auth} />
+					<PrivateRoute exact path={path.BASE} component={App} />
+					<Route exact path={path.LOGIN} component={Auth} />
+					<Route exact path={path.REGISTER} component={Auth} />
 				</Switch>
 			</BrowserRouter>
 		</Provider>

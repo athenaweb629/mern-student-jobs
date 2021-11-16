@@ -8,6 +8,7 @@ import { setCredentials } from '../../features/auth/authSlice';
 import { useLoginMutation, LoginRequest } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
+import path from '../../constants/path';
 
 const Auth = () => {
 	const user = useAuth();
@@ -21,7 +22,7 @@ const Auth = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
-		if (user) history.push('/');
+		if (user) history.push(path.BASE);
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -48,7 +49,7 @@ const Auth = () => {
 	};
 
 	const changeAuthType = () => {
-		history.push(isSignup ? '/login' : '/register');
+		history.push(isSignup ? path.LOGIN : path.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 	};

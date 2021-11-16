@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 
+import path from './constants/path';
 import PrivateRoute from './utils/PrivateRoute';
 import { store } from './app/store';
 import { Auth } from './pages';
@@ -36,9 +37,9 @@ ReactDOM.render(
 			<PersistGate loading={null} persistor={persistor}>
 				<BrowserRouter>
 					<Switch>
-						<PrivateRoute exact path='/' component={App} />
-						<Route exact path='/login' component={Auth} />
-						<Route exact path='/register' component={Auth} />
+						<PrivateRoute exact path={path.BASE} component={App} />
+						<Route exact path={path.LOGIN} component={Auth} />
+						<Route exact path={path.REGISTER} component={Auth} />
 					</Switch>
 				</BrowserRouter>
 			</PersistGate>

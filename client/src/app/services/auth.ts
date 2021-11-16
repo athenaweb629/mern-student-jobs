@@ -3,14 +3,18 @@ import path from '../../constants/path';
 import { RootState } from '../store';
 
 export interface User {
-	firstName: string;
-	lastName: string;
+	firstName:string,
+  lastName:string;
+	name:string;
 	success: boolean;
 }
 
 export interface LoginRequest {
-	username: string;
+	email: string;
 	password: string;
+	name?:string;
+	firstName?:string;
+	lastName?:string;
 }
 
 export const api = createApi({
@@ -34,10 +38,17 @@ export const api = createApi({
 				body: credentials,
 			}),
 		}),
+		register: builder.mutation<User, LoginRequest>({
+			query: (body) => ({
+				url: path.api.REGISTER,
+				method: 'POST',
+				body,
+			}),
+		}),
 		protected: builder.mutation<{ message: string }, void>({
 			query: () => 'protected',
 		}),
 	}),
 });
 
-export const { useLoginMutation, useProtectedMutation } = api;
+export const { useLoginMutation, useProtectedMutation, useRegisterMutation } = api;

@@ -24,19 +24,21 @@ export const loginController = async (req: Request, res: Response) => {
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (isMatch && user.confirmed === false) {
-			return res
-				.status(400)
-				.json({ message: 'Please confirm your account first' });
+			return res.status(400).json({ message: 'Please confirm your account first' });
 		}
 
 		if (isMatch) {
-			const token = jwt.sign({ email }, process.env.SECRET, {
-				expiresIn: '30m',
+			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' }); 
+
+			// res.cookie('token', token, { httpOnly: true, maxAge:  3600000 });
+			// res.cookie('rememberme', '1', { expires: new Date(Date.now() + 900000), httpOnly: true });
+
+			return res.send({ 
+				email: user.email,
+				name: user.name,
+				role: user.role,
+				token
 			});
-
-			res.cookie('token', token, { httpOnly: true });
-
-			return res.send(user);
 		}
 
 		return res.status(400).json({ message: 'Incorrect credentials' });
@@ -73,7 +75,7 @@ export const registerController = async (req: Request, res: Response) => {
 			});
 		});
 
-		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '30m' });
+		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 		sendMail('activate', email, token);
 
@@ -112,7 +114,7 @@ export const resendEmail = async (req: Request, res: Response) => {
 
 		if (!user) return res.status(400).json({ message: 'User does not exist' });
 
-		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '30m' });
+		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 		sendMail('activate', email, token);
 
@@ -129,7 +131,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 	if (!err.isEmpty()) return res.status(400).json(err);
 
-	const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '30m' });
+	const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 	try {
 		await User.updateOne({ email }, { $set: { resetPasswordToken: token } });
@@ -143,29 +145,35 @@ export const forgotPassword = async (req: Request, res: Response) => {
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
-  const { password } = req.body;
+	const { password } = req.body;
   const { token } = req.params;
   let newPassword: any;
   let newSalt: any;
-
+	
   const err = validationResult(req);
   if (!err.isEmpty()) return res.status(400).json(err);
-
+	
   try {
-    await jwt.verify(token, process.env.SECRET);
-
+		await jwt.verify(token, process.env.SECRET);
+		
     bcrypt.genSalt(10, async (e, salt: string) => {
-      bcrypt.hash(password, salt, async (_error, hash: string) => {
-        if (e) throw e;
+			bcrypt.hash(password, salt, async (_error, hash: string) => {
+				if (e) throw e;
         newPassword = hash;
         newSalt = salt;
-
+				
         await User.updateOne({ token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
       });
     });
-
+		
     return res.status(200).json({ message: 'Password has been reset' });
   } catch (e) {
-    return res.status(400).json(e);
+		return res.status(400).json(e);
   }
 };
+
+export const doSomething = async (req: Request, res: Response) => {
+	// todo: provjeriti je li token validan -> dodati middleware ispod user modela...
+	// https://github.com/adrianhajdin/project_mern_memories/blob/PART_5/server/middleware/auth.js
+	res.send({ message: 'Authenticated!' });
+}

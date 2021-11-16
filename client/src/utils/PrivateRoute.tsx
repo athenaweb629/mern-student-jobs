@@ -3,7 +3,7 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
 const PrivateRoute = (props: RouteProps) => {
-	const { user } = useAuth();
+	const user = useAuth();
 
 	if (user) return <Route {...props} />;
 

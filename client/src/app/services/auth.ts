@@ -3,9 +3,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 
 export interface User {
-	firstName: string;
-	lastName: string;
-	success: boolean;
+	email: string,
+	name: string,
+	token: string,
+	role: 'student' | 'company',
 }
 
 export interface LoginRequest {
@@ -17,25 +18,19 @@ export const api = createApi({
 	baseQuery: fetchBaseQuery({
 		baseUrl: 'http://localhost:5000/api',
 		prepareHeaders: (headers, { getState }) => {
-			const { token } = (getState() as RootState).auth;
+			const { user } = (getState() as RootState).auth;
 
-			if (token) {
-				headers.set('authorization', `Bearer ${token}`);
-			}
+			if (user?.token) headers.set('authorization', `Bearer ${user?.token}`);
 
 			return headers;
 		},
 	}),
 	endpoints: (builder) => ({
 		login: builder.mutation<User, LoginRequest>({
-			query: (credentials) => ({
-				url: '/user/login',
-				method: 'POST',
-				body: credentials,
-			}),
+			query: (credentials) => ({ url: '/user/login', method: 'POST', body: credentials }),
 		}),
 		protected: builder.mutation<{ message: string }, void>({
-			query: () => 'protected',
+			query: () => '/user/authorizedAction',
 		}),
 	}),
 });

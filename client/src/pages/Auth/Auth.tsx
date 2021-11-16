@@ -11,7 +11,7 @@ import Input from './Input';
 import path from '../../constants/path';
 
 const Auth = () => {
-	const { user: isUserLoggedIn } = useAuth();
+	const user = useAuth();
 	const [login] = useLoginMutation();
 	const dispatch = useDispatch();
 	const location = useLocation();
@@ -22,16 +22,16 @@ const Auth = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
-		if (isUserLoggedIn) history.push(path.BASE);
+		if (user) history.push(path.BASE);
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		try {
-			const user = await login(form).unwrap();
+			const userData = await login(form).unwrap();
 
-			dispatch(setCredentials(user));
+			dispatch(setCredentials(userData));
 
 			history.push('/');
 		} catch (err) {

@@ -3,9 +3,10 @@ import path from '../../constants/path';
 import { RootState } from '../store';
 
 export interface User {
-	firstName: string;
-	lastName: string;
-	success: boolean;
+	email: string,
+	name: string,
+	token: string,
+	role: 'student' | 'company',
 }
 
 export interface LoginRequest {
@@ -17,25 +18,19 @@ export const api = createApi({
 	baseQuery: fetchBaseQuery({
 		baseUrl: process.env.REACT_APP_API_BASE_URL,
 		prepareHeaders: (headers, { getState }) => {
-			const { token } = (getState() as RootState).auth;
+			const { user } = (getState() as RootState).auth;
 
-			if (token) {
-				headers.set('authorization', `Bearer ${token}`);
-			}
+			if (user?.token) headers.set('authorization', `Bearer ${user?.token}`);
 
 			return headers;
 		},
 	}),
 	endpoints: (builder) => ({
 		login: builder.mutation<User, LoginRequest>({
-			query: (credentials) => ({
-				url: path.api.LOGIN,
-				method: 'POST',
-				body: credentials,
-			}),
+			query: (credentials) => ({ url: path.api.LOGIN, method: 'POST', body: credentials, }),
 		}),
 		protected: builder.mutation<{ message: string }, void>({
-			query: () => 'protected',
+			query: () => '/user/authorizedAction',
 		}),
 	}),
 });

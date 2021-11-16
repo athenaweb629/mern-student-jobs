@@ -3,7 +3,7 @@ import path from '../constants/path';
 import useAuth from '../hooks/useAuth';
 
 const PrivateRoute = (props: RouteProps) => {
-	const { user } = useAuth();
+	const user = useAuth();
 
 	if (user) return <Route {...props} />;
 

@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { avatar } from '../assets/images';
 import { logout } from '../features/auth/authSlice';
+import useAuth from '../hooks/useAuth';
+import DoSomething from './DoSomething';
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -50,6 +52,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar = () => {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+
+	const user = useAuth();
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -113,9 +117,10 @@ const Navbar = () => {
 					<Box sx={{ display: 'flex', alignItems: 'center' }}>
 						<Avatar sx={{ mr: 1 }} alt="Avatar" src={avatar} />
 						<Typography variant="h6" noWrap component="div" color="text.primary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-							Nick Ryback
+							{user?.name}
 						</Typography>
 					</Box>
+					<DoSomething />
 					<Search>
 						<SearchWrapper>
 							<SearchIcon />

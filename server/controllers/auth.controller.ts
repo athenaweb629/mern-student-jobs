@@ -30,9 +30,6 @@ export const loginController = async (req: Request, res: Response) => {
 		if (isMatch) {
 			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' }); 
 
-			// res.cookie('token', token, { httpOnly: true, maxAge:  3600000 });
-			// res.cookie('rememberme', '1', { expires: new Date(Date.now() + 900000), httpOnly: true });
-
 			return res.send({ 
 				email: user.email,
 				name: user.name,
@@ -40,8 +37,6 @@ export const loginController = async (req: Request, res: Response) => {
 				token
 			});
 		}
-
-		return res.status(400).json({ message: 'Incorrect credentials' });
 	} catch (error) {
 		console.log(error);
 	}

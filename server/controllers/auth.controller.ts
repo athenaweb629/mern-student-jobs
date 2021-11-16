@@ -168,7 +168,5 @@ export const resetPassword = async (req: Request, res: Response) => {
 };
 
 export const doSomething = async (req: Request, res: Response) => {
-	// todo: provjeriti je li token validan -> dodati middleware ispod user modela...
-	// https://github.com/adrianhajdin/project_mern_memories/blob/PART_5/server/middleware/auth.js
 	res.send({ message: 'Authenticated!' });
 }

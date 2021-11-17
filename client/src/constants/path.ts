@@ -10,6 +10,7 @@ export default {
 		REGISTER: '/user/register',
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
 		RESEND_EMAIL: '/user/resendEmail',
+		RESET_PASSWORD: '/user/reset-password/:token',
 	},
 
 	build: (path:string, ...params:Array<any>):string => {

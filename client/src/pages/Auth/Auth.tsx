@@ -1,11 +1,13 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/no-this-in-sfc */
 import React, { useState, useEffect } from 'react';
 import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, Snackbar, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation } from '../../app/services/auth';
+import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 
 import Input from './Input';
@@ -14,17 +16,20 @@ import path from '../../constants/path';
 const Auth = () => {
 	const user = useAuth();
 	const [resetPassword] = useResetPasswordMutation();
+	const [forgotPassword] = useForgotPasswordMutation();
 	const [login] = useLoginMutation();
 	const [register] = useRegisterMutation();
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const history = useHistory();
 
+	const [isResettingPassword, setIsResettPassword] = useState(location.pathname.includes('reset-password'));
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '' });
+	const [newPassword, setNewPassword] = useState('');
 
 	const [showPassword, setShowPassword] = useState(false);
-	const [isResettingPassword, setIsResettingPassword] = useState(false);
+	const [isForgettingPassword, setisForgettingPassword] = useState(false);
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -57,27 +62,40 @@ const Auth = () => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};
 
+	const handleChangeReset = (event: React.FormEvent<HTMLInputElement>) => {
+		setNewPassword(event.currentTarget.value);
+	};
+
+	const handleSubmitForgotPassword = () => {
+		forgotPassword({ email: form.email });
+	};
+
 	const changeAuthType = () => {
 		history.push(isSignup ? '/login' : '/register');
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
-		setIsResettingPassword(false);
+		setisForgettingPassword(false);
 	};
 
 	const handleSignIn = () => {
 		history.push('/login');
-		setIsResettingPassword(false);
+		setisForgettingPassword(false);
 		setIsSignup(false);
 	};
 
 	const handleForgotPassword = () => {
 		history.push('/forgot-password');
 		setIsSignup(false);
-		setIsResettingPassword(true);
+		setisForgettingPassword(true);
 	};
 
 	const handleResetPassword = () => {
-		resetPassword({ email: form.email });
+		const token = useParams();
+		const props: any = { password: newPassword, token };
+		resetPassword(props);
+		setIsResettPassword(false);
+		console.log('pa cak sam dosao do tu');
+		history.push('/login');
 	};
 
 	return (
@@ -99,14 +117,109 @@ const Auth = () => {
 					backgroundPosition: 'center',
 				}}
 			/>
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+			{isResettingPassword === true ? (
+				<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+					<Box
+						sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+						<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+							<LockOutlined />
+						</Avatar>
+						<Typography component='h1' variant='h5'>
+							Reset your password
+						</Typography>
+						<Box
+							component='form'
+							noValidate
+							sx={{ mt: 1, width: '65%' }}>
+							<Grid container spacing={2}>
+								<Input name='newPassword' label='New Password' handleChange={handleChangeReset} type='password' />
+								<Input name='confirmPassword' label='Repeat Password' handleChange={handleChangeReset} type='password' />
+							</Grid>
+							<Button
+								type='submit'
+								fullWidth
+								variant='contained'
+								sx={{ mt: 3, mb: 2 }}
+								onClick={handleResetPassword}>
+								{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+							</Button>
+						</Box>
+					</Box>
+				</Grid>
+			)
+				:												(
+					<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+						<Box
+							sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+							<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+								<LockOutlined />
+							</Avatar>
+							<Typography component='h1' variant='h5'>
+								{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+							</Typography>
+							<Box
+								component='form'
+								noValidate
+								onSubmit={handleSubmit}
+								sx={{ mt: 1, width: '65%' }}>
+								<Grid container spacing={2}>
+									{isSignup && (
+										<>
+											<Input name='firstName' label='First Name' handleChange={handleChange} autoFocus half />
+											<Input name='lastName' label='Last Name' handleChange={handleChange} half />
+										</>
+									)}
+									{!isForgettingPassword && (
+										<>
+											<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
+											<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+										</>
+									)}
+									{isForgettingPassword && (
+										<>
+											<Input name='isForgettingPassword' label='Email' handleChange={handleChange} type='email' />
+										</>
+									)}
+
+									{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} type='password' />}
+								</Grid>
+								<Button
+									type='submit'
+									fullWidth
+									variant='contained'
+									sx={{ mt: 3, mb: 2 }}
+									onClick={handleSubmitForgotPassword}>
+									{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+								</Button>
+								<Grid container>
+									<Grid item xs>
+										{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+											<Button
+												onClick={handleForgotPassword}>Forgot password?
+											</Button>
+										)}
+
+									</Grid>
+									<Grid item>
+										<Button
+											onClick={changeAuthType}>
+											{isForgettingPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
+										</Button>
+									</Grid>
+								</Grid>
+							</Box>
+						</Box>
+					</Grid>
+				)
+			}
+			{/* <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
 					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-						{isResettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+						{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 					</Typography>
 					<Box
 						component='form'
@@ -120,15 +233,15 @@ const Auth = () => {
 									<Input name='lastName' label='Last Name' handleChange={handleChange} half />
 								</>
 							)}
-							{!isResettingPassword && (
+							{!isForgettingPassword && (
 								<>
 									<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
 									<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
 								</>
 							)}
-							{isResettingPassword && (
+							{isForgettingPassword && (
 								<>
-									<Input name='isResettingPassword' label='Email' handleChange={handleChange} type='email' />
+									<Input name='isForgettingPassword' label='Email' handleChange={handleChange} type='email' />
 								</>
 							)}
 
@@ -140,11 +253,11 @@ const Auth = () => {
 							variant='contained'
 							sx={{ mt: 3, mb: 2 }}
 							onClick={handleResetPassword}>
-							{isResettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+							{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 						</Button>
 						<Grid container>
 							<Grid item xs>
-								{isResettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+								{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
 									<Button
 										onClick={handleForgotPassword}>Forgot password?
 									</Button>
@@ -154,13 +267,13 @@ const Auth = () => {
 							<Grid item>
 								<Button
 									onClick={changeAuthType}>
-									{isResettingPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
+									{isForgettingPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
 								</Button>
 							</Grid>
 						</Grid>
 					</Box>
 				</Box>
-			</Grid>
+			</Grid> */}
 		</Grid>
 	);
 };

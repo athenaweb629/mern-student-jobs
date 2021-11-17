@@ -13,6 +13,11 @@ export interface Email {
 	email: string;
 }
 
+export interface Payload {
+	password: string;
+	token: string;
+}
+
 export interface LoginRequest {
 	email: string;
 	password: string;
@@ -23,6 +28,11 @@ export interface LoginRequest {
 
 export interface ForgotPasswordRequest {
 	email: string;
+}
+
+export interface ResetPasswordRequest {
+	password: string;
+	token: string;
 }
 
 export const api = createApi({
@@ -47,9 +57,16 @@ export const api = createApi({
 				body,
 			}),
 		}),
-		resetPassword: builder.mutation<Email, ForgotPasswordRequest>({
+		resetPassword: builder.mutation<Payload, ResetPasswordRequest>({
+			query: (data) => ({
+				url: `${path.api.RESET_PASSWORD}/${data.token}`,
+				method: 'PATCH',
+				body: data.password,
+			}),
+		}),
+		forgotPassword: builder.mutation<Email, ForgotPasswordRequest>({
 			query: (email) => ({
-				url: '/user/forgot-password',
+				url: path.FORGOT_PASSWORD,
 				method: 'PATCH',
 				body: email,
 			}),
@@ -60,4 +77,4 @@ export const api = createApi({
 	}),
 });
 
-export const { useLoginMutation, useProtectedMutation, useRegisterMutation, useResetPasswordMutation } = api;
+export const { useLoginMutation, useProtectedMutation, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation } = api;

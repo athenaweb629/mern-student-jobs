@@ -21,7 +21,7 @@ export interface LoginRequest {
 	lastName?:string;
 }
 
-export interface ResetPasswordRequest {
+export interface ForgotPasswordRequest {
 	email: string;
 }
 
@@ -47,11 +47,11 @@ export const api = createApi({
 				body,
 			}),
 		}),
-		resetPassword: builder.mutation<Email, ResetPasswordRequest>({
-			query: (credentials) => ({
-				url: '/user/resetPassword',
+		resetPassword: builder.mutation<Email, ForgotPasswordRequest>({
+			query: (email) => ({
+				url: '/user/forgot-password',
 				method: 'PATCH',
-				body: credentials,
+				body: email,
 			}),
 		}),
 		protected: builder.mutation<{ message: string }, void>({
@@ -60,4 +60,4 @@ export const api = createApi({
 	}),
 });
 
-export const { useLoginMutation, useProtectedMutation, useRegisterMutation } = api;
+export const { useLoginMutation, useProtectedMutation, useRegisterMutation, useResetPasswordMutation } = api;

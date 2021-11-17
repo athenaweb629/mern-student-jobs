@@ -3,7 +3,7 @@ export default {
 	BASE: '/',
 	LOGIN: '/login',
 	REGISTER: '/register',
-	FORGOT_PASSWORD: '/forgotPassword',
+	FORGOT_PASSWORD: '/forgot-password',
 
 	api: {
 		LOGIN: '/user/login',

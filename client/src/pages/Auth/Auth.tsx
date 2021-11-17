@@ -5,12 +5,15 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation, LoginRequest, useResetPasswordMutation, ResetPasswordRequest, useRegisterMutation } from '../../app/services/auth';
+import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
+
 import Input from './Input';
+import path from '../../constants/path';
 
 const Auth = () => {
 	const user = useAuth();
+	const [resetPassword] = useResetPasswordMutation();
 	const [login] = useLoginMutation();
 	const [register] = useRegisterMutation();
 	const dispatch = useDispatch();
@@ -21,7 +24,7 @@ const Auth = () => {
 	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '' });
 
 	const [showPassword, setShowPassword] = useState(false);
-	const [resetPassword, setResetPassword] = useState(false);
+	const [isResettingPassword, setIsResettingPassword] = useState(false);
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -31,14 +34,14 @@ const Auth = () => {
 		event.preventDefault();
 
 		try {
-			let user;
+			let userData;
 			if (isSignup) {
 				const name = `${form.firstName} ${form.lastName}`;
-				user =	await register({ name, email: form.email, password: form.password }).unwrap();
+				userData =	await register({ name, email: form.email, password: form.password }).unwrap();
 			} else {
-				user = await login(form).unwrap();
+				userData = await login(form).unwrap();
 			}
-			dispatch(setCredentials(user));
+			dispatch(setCredentials(userData));
 
 			history.push('/');
 		} catch (err) {
@@ -58,19 +61,23 @@ const Auth = () => {
 		history.push(isSignup ? '/login' : '/register');
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
-		setResetPassword(false);
+		setIsResettingPassword(false);
 	};
 
 	const handleSignIn = () => {
 		history.push('/login');
-		setResetPassword(false);
+		setIsResettingPassword(false);
 		setIsSignup(false);
 	};
 
-	const handleResetPassword = () => {
-		history.push('/resetPassword');
+	const handleForgotPassword = () => {
+		history.push('/forgot-password');
 		setIsSignup(false);
-		setResetPassword(true);
+		setIsResettingPassword(true);
+	};
+
+	const handleResetPassword = () => {
+		resetPassword({ email: form.email });
 	};
 
 	return (
@@ -99,7 +106,7 @@ const Auth = () => {
 						<LockOutlined />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-						{resetPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+						{isResettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 					</Typography>
 					<Box
 						component='form'
@@ -113,15 +120,15 @@ const Auth = () => {
 									<Input name='lastName' label='Last Name' handleChange={handleChange} half />
 								</>
 							)}
-							{!resetPassword && (
+							{!isResettingPassword && (
 								<>
 									<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
 									<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
 								</>
 							)}
-							{resetPassword && (
+							{isResettingPassword && (
 								<>
-									<Input name='resetPassword' label='Email' handleChange={handleChange} type='email' />
+									<Input name='isResettingPassword' label='Email' handleChange={handleChange} type='email' />
 								</>
 							)}
 
@@ -131,14 +138,15 @@ const Auth = () => {
 							type='submit'
 							fullWidth
 							variant='contained'
-							sx={{ mt: 3, mb: 2 }}>
-							{resetPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+							sx={{ mt: 3, mb: 2 }}
+							onClick={handleResetPassword}>
+							{isResettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 						</Button>
 						<Grid container>
 							<Grid item xs>
-								{resetPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+								{isResettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
 									<Button
-										onClick={handleResetPassword}>Forgot password?
+										onClick={handleForgotPassword}>Forgot password?
 									</Button>
 								)}
 
@@ -146,7 +154,7 @@ const Auth = () => {
 							<Grid item>
 								<Button
 									onClick={changeAuthType}>
-									{resetPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
+									{isResettingPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
 								</Button>
 							</Grid>
 						</Grid>

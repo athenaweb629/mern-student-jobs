@@ -13,6 +13,7 @@ export interface LoginRequest {
 	email: string;
 	password: string;
 	name?:string;
+	resetPassword?:string;
 	firstName?:string;
 	lastName?:string;
 }

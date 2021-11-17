@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, Snackbar, Alert } from '@mui/material';
+import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, Alert, Snackbar } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -9,6 +9,7 @@ import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/s
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 import path from '../../constants/path';
+import isValid from '../../utils/isValid';
 
 const Auth = () => {
 	const user = useAuth();
@@ -19,9 +20,17 @@ const Auth = () => {
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '' });
-
+	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '', resetPassword: undefined });
+	const [isValidEmail, setIsValidEmail] = useState(true);
+	const [isValidName, setIsValidName] = useState(true);
+	const [isValidPassword, setIsValidPassword] = useState(true);
+	const [isValidResePassword, setIsValidResePassword] = useState(true);
 	const [showPassword, setShowPassword] = useState(false);
+	const [open, setOpen] = React.useState(false);
+
+	const handleClick = () => {
+		setOpen(true);
+	};
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -29,7 +38,10 @@ const Auth = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
+		setIsValidEmail(isValid(form.email, 'email'));
+		setIsValidName(isValid(`${form.firstName} ${form.lastName}`, 'name'));
+		setIsValidPassword(isValid(form.password, 'password'));
+		setIsValidResePassword(form.password === form.resetPassword);
 		try {
 			let userData;
 
@@ -44,10 +56,9 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err) {
-			// TODO: Napraviti da ovo radi
-			<Snackbar autoHideDuration={6000}>
-				<Alert severity='error' sx={{ width: '100%' }}>
-					Error!
+			<Snackbar open={open} autoHideDuration={6000}>
+				<Alert severity="error" sx={{ width: '100%' }}>
+					Please try again!
 				</Alert>
 			</Snackbar>;
 		}
@@ -94,17 +105,18 @@ const Auth = () => {
 						component='form'
 						noValidate
 						onSubmit={handleSubmit}
+						onClick={handleClick}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
 								<>
-									<Input name='firstName' label='First Name' handleChange={handleChange} autoFocus half />
-									<Input name='lastName' label='Last Name' handleChange={handleChange} half />
+									<Input name='firstName' label='First Name' handleChange={handleChange} isValid={isValidName} autoFocus half />
+									<Input name='lastName' label='Last Name' handleChange={handleChange} isValid={isValidName} half />
 								</>
 							)}
-							<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
-							<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
-							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} type='password' />}
+							<Input name='email' label='Email Address' handleChange={handleChange} type='email' isValid={isValidEmail} />
+							<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} isValid={isValidPassword} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} isValid={isValidResePassword} type='password' />}
 						</Grid>
 						<Button
 							type='submit'

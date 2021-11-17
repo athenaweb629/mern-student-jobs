@@ -32,6 +32,7 @@ module.exports = {
 		'no-confusing-arrow': 0,
 		'implicit-arrow-linebreak': 0,
 		'jsx-quotes': 0,
+		'no-useless-escape': 0,
 		'react/state-in-constructor': 0,
 		'no-mixed-spaces-and-tabs': 0,
 		'react/no-unescaped-entities': 0,

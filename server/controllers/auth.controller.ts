@@ -55,7 +55,7 @@ export const registerController = async (req: Request, res: Response) => {
 		const user = await User.findOne({ email });
 
 		if (user) {
-			res.status(400).json({ email: 'User with that e-mail already exists' });
+			return res.status(400).json({ email: 'User with that e-mail already exists' });
 		}
 
 		const newUser = new User({ email, name, password });

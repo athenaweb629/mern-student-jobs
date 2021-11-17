@@ -8,6 +8,7 @@ import { setCredentials } from '../../features/auth/authSlice';
 import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
+import path from '../../constants/path';
 
 const Auth = () => {
 	const user = useAuth();
@@ -30,14 +31,16 @@ const Auth = () => {
 		event.preventDefault();
 
 		try {
-			let user;
+			let userData;
+
 			if (isSignup) {
 				const name = `${form.firstName} ${form.lastName}`;
-				user =	await register({ name, email: form.email, password: form.password }).unwrap();
+				userData =	await register({ name, email: form.email, password: form.password }).unwrap();
 			} else {
-				user = await login(form).unwrap();
+				userData = await login(form).unwrap();
 			}
-			dispatch(setCredentials(user));
+
+			dispatch(setCredentials(userData));
 
 			history.push('/');
 		} catch (err) {

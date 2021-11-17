@@ -2,6 +2,8 @@ import ReactDOM from 'react-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import path from './constants/path';
 import PrivateRoute from './utils/PrivateRoute';
@@ -27,16 +29,20 @@ const theme = createTheme({
 	},
 });
 
+const persistor = persistStore(store);
+
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
 		<Provider store={store}>
-			<BrowserRouter>
-				<Switch>
-					<PrivateRoute exact path={path.BASE} component={App} />
-					<Route exact path={path.LOGIN} component={Auth} />
-					<Route exact path={path.REGISTER} component={Auth} />
-				</Switch>
-			</BrowserRouter>
+			<PersistGate loading={null} persistor={persistor}>
+				<BrowserRouter>
+					<Switch>
+						<PrivateRoute exact path={path.BASE} component={App} />
+						<Route exact path={path.LOGIN} component={Auth} />
+						<Route exact path={path.REGISTER} component={Auth} />
+					</Switch>
+				</BrowserRouter>
+			</PersistGate>
 		</Provider>
 	</ThemeProvider>,
 	document.getElementById('root')

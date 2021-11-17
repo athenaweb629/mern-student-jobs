@@ -10,7 +10,7 @@ import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 
 const Auth = () => {
-	const { user: isUserLoggedIn } = useAuth();
+	const user = useAuth();
 	const [login] = useLoginMutation();
 	const [register] = useRegisterMutation();
 	const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Auth = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
-		if (isUserLoggedIn) history.push('/');
+		if (user) history.push(path.BASE);
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

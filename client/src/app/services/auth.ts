@@ -10,8 +10,11 @@ export interface User {
 }
 
 export interface LoginRequest {
-	username: string;
+	email: string;
 	password: string;
+	name?:string;
+	firstName?:string;
+	lastName?:string;
 }
 
 export const api = createApi({
@@ -29,10 +32,17 @@ export const api = createApi({
 		login: builder.mutation<User, LoginRequest>({
 			query: (credentials) => ({ url: path.api.LOGIN, method: 'POST', body: credentials, }),
 		}),
+		register: builder.mutation<User, LoginRequest>({
+			query: (body) => ({
+				url: path.api.REGISTER,
+				method: 'POST',
+				body,
+			}),
+		}),
 		protected: builder.mutation<{ message: string }, void>({
 			query: () => '/user/authorizedAction',
 		}),
 	}),
 });
 
-export const { useLoginMutation, useProtectedMutation } = api;
+export const { useLoginMutation, useProtectedMutation, useRegisterMutation } = api;

@@ -8,9 +8,17 @@ export interface User {
 	success: boolean;
 }
 
+export interface Email {
+	email: string;
+}
+
 export interface LoginRequest {
 	username: string;
 	password: string;
+}
+
+export interface ResetPasswordRequest {
+	email: string;
 }
 
 export const api = createApi({
@@ -31,6 +39,13 @@ export const api = createApi({
 			query: (credentials) => ({
 				url: '/user/login',
 				method: 'POST',
+				body: credentials,
+			}),
+		}),
+		resetPassword: builder.mutation<Email, ResetPasswordRequest>({
+			query: (credentials) => ({
+				url: '/user/resetPassword',
+				method: 'PATCH',
 				body: credentials,
 			}),
 		}),

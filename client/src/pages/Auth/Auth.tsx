@@ -5,7 +5,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation, LoginRequest } from '../../app/services/auth';
+import { useLoginMutation, LoginRequest, useResetPasswordMutation, ResetPasswordRequest } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 
@@ -19,6 +19,7 @@ const Auth = () => {
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = React.useState<LoginRequest>({ username: '', password: '', });
 	const [showPassword, setShowPassword] = useState(false);
+	const [resetPassword, setResetPassword] = useState(false);
 
 	useEffect(() => {
 		if (isUserLoggedIn) history.push('/');
@@ -51,6 +52,19 @@ const Auth = () => {
 		history.push(isSignup ? '/login' : '/register');
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
+		setResetPassword(false);
+	};
+
+	const handleSignIn = () => {
+		history.push('/login');
+		setResetPassword(false);
+		setIsSignup(false);
+	};
+
+	const handleResetPassword = () => {
+		history.push('/resetPassword');
+		setIsSignup(false);
+		setResetPassword(true);
 	};
 
 	return (
@@ -79,7 +93,7 @@ const Auth = () => {
 						<LockOutlined />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-						{isSignup ? 'Sign up' : 'Sign in'}
+						{resetPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 					</Typography>
 					<Box
 						component='form'
@@ -93,8 +107,18 @@ const Auth = () => {
 									<Input name='lastName' label='Last Name' handleChange={handleChange} half />
 								</>
 							)}
-							<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
-							<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{!resetPassword && (
+								<>
+									<Input name='email' label='Email Address' handleChange={handleChange} type='email' />
+									<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+								</>
+							)}
+							{resetPassword && (
+								<>
+									<Input name='resetPassword' label='Email' handleChange={handleChange} type='email' />
+								</>
+							)}
+
 							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} type='password' />}
 						</Grid>
 						<Button
@@ -102,16 +126,21 @@ const Auth = () => {
 							fullWidth
 							variant='contained'
 							sx={{ mt: 3, mb: 2 }}>
-							{isSignup ? 'Sign Up' : 'Sign In'}
+							{resetPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 						</Button>
 						<Grid container>
 							<Grid item xs>
-								<Button>Forgot password?</Button>
+								{resetPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+									<Button
+										onClick={handleResetPassword}>Forgot password?
+									</Button>
+								)}
+
 							</Grid>
 							<Grid item>
 								<Button
 									onClick={changeAuthType}>
-									{isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up"}
+									{resetPassword ? 'Sign Up' : (isSignup ? 'Sign In' : 'Sign Up')}
 								</Button>
 							</Grid>
 						</Grid>

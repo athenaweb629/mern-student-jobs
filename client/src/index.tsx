@@ -34,6 +34,7 @@ ReactDOM.render(
 					<PrivateRoute exact path='/' component={App} />
 					<Route exact path='/login' component={Auth} />
 					<Route exact path='/register' component={Auth} />
+					<Route exact path='/resetPassword' component={Auth} />
 				</Switch>
 			</BrowserRouter>
 		</Provider>

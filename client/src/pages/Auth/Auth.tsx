@@ -5,32 +5,39 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation, LoginRequest, useResetPasswordMutation, ResetPasswordRequest } from '../../app/services/auth';
+import { useLoginMutation, LoginRequest, useResetPasswordMutation, ResetPasswordRequest, useRegisterMutation } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 
 const Auth = () => {
-	const { user: isUserLoggedIn } = useAuth();
+	const user = useAuth();
 	const [login] = useLoginMutation();
+	const [register] = useRegisterMutation();
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = React.useState<LoginRequest>({ username: '', password: '', });
+	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '' });
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [resetPassword, setResetPassword] = useState(false);
 
 	useEffect(() => {
-		if (isUserLoggedIn) history.push('/');
+		if (user) history.push(path.BASE);
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		try {
-			const user = await login(form).unwrap();
-
+			let user;
+			if (isSignup) {
+				const name = `${form.firstName} ${form.lastName}`;
+				user =	await register({ name, email: form.email, password: form.password }).unwrap();
+			} else {
+				user = await login(form).unwrap();
+			}
 			dispatch(setCredentials(user));
 
 			history.push('/');
@@ -43,7 +50,6 @@ const Auth = () => {
 			</Snackbar>;
 		}
 	};
-
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};

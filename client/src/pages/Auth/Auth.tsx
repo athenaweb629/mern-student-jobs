@@ -56,11 +56,8 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err) {
-			<Snackbar open={open} autoHideDuration={6000}>
-				<Alert severity="error" sx={{ width: '100%' }}>
-					Please try again!
-				</Alert>
-			</Snackbar>;
+			console.log(err);
+			// TODO: Iscitati ovaj error, i onda ovisno o tome rijesiti validaciju
 		}
 	};
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {

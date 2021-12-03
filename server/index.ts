@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import connectDB from './helpers/connectDB';
 import userRouter from './routes/user.route';
+import postRouter from './routes/post.route';
 
 //* Setup Environment Variables
 dotenv.config();
@@ -24,6 +25,7 @@ app.get('/', (req: Request, res: Response) => res.status(200).json({ status: 'Ba
 
 //* Use Routes
 app.use('/api/user', userRouter);
+app.use('/post', postRouter);
 
 //* 404 Route
 app.use((req: Request, res: Response) => res.status(404).json({ status: 'Page not found.' }));

@@ -6,4 +6,6 @@ export const isAuthTokenExpired = (user) => {
 
 		return false;
 	});
+
+	return true;
 };

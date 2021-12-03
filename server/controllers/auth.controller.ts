@@ -70,7 +70,7 @@ export const registerController = async (req: Request, res: Response) => {
 			});
 		});
 
-		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
+		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1m' });
 
 		sendMail('activate', email, token);
 

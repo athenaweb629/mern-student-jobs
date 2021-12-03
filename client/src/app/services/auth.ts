@@ -25,9 +25,10 @@ export const api = createApi({
 		prepareHeaders: (headers, { getState }) => {
 			let { user } = (getState() as RootState).auth;
 
-			if (user?.token && !isAuthTokenExpired) {
+			if (user?.token && !isAuthTokenExpired()) {
 				headers.set('authorization', `Bearer ${user?.token}`);
 			} else {
+				console.log('here', user, isAuthTokenExpired());
 				user = null;
 				window.location.href = '/login';
 			}

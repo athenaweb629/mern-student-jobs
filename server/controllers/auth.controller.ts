@@ -28,7 +28,7 @@ export const loginController = async (req: Request, res: Response) => {
 		}
 
 		if (isMatch) {
-			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1m' }); 
+			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' }); 
 
 			return res.send({ 
 				email: user.email,
@@ -70,7 +70,7 @@ export const registerController = async (req: Request, res: Response) => {
 			});
 		});
 
-		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1m' });
+		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 		sendMail('activate', email, token);
 
@@ -109,7 +109,7 @@ export const resendEmail = async (req: Request, res: Response) => {
 
 		if (!user) return res.status(400).json({ message: 'User does not exist' });
 
-		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1m' });
+		const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 		sendMail('activate', email, token);
 
@@ -126,7 +126,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 	if (!err.isEmpty()) return res.status(400).json(err);
 
-	const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1m' });
+	const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' });
 
 	try {
 		await User.updateOne({ email }, { $set: { resetPasswordToken: token } });

@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 
 import Post from '../models/post.model';
 
+export const getPosts = async (req: Request, res: Response) => {
+  const posts = await Post.find({});
+
+  res.json({ posts });
+};
+
 export const createPost = (req: Request, res: Response) => {
   const { title, description, level, availability, author } = req.body;
   const newPost = new Post({ title, description, level, availability, author });

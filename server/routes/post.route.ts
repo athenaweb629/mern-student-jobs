@@ -1,9 +1,10 @@
 import express from 'express';
-import { createPost } from '../controllers/post.controller';
+import { createPost, getPosts } from '../controllers/post.controller';
 import checkIfUserCanPost from '../middleware/checkIfUserCanPost';
 
 const router = express.Router();
 
-router.post('/createPost', checkIfUserCanPost, createPost);
+router.get('/', getPosts);
+router.post('/', checkIfUserCanPost, createPost);
 
 export default router;

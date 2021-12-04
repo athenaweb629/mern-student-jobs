@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom';
 import { avatar } from '../assets/images';
 import { logout } from '../features/auth/authSlice';
 import useAuth from '../hooks/useAuth';
-import DoSomething from './DoSomething';
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -120,7 +119,6 @@ const Navbar = () => {
 							{user?.name}
 						</Typography>
 					</Box>
-					<DoSomething />
 					<Search>
 						<SearchWrapper>
 							<SearchIcon />

@@ -1,7 +1,7 @@
 import { Box, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { Sidebar, Main as MainView } from '../../components';
+import { Sidebar, Main as MainView, CreatePost } from '../../components';
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -20,6 +20,8 @@ const Main = () => (
 				<Item><Sidebar /></Item>
 			</Grid>
 			<Grid item xs={12} sm={7} md={8} lg={9}>
+				<Item><CreatePost /></Item>
+				<br />
 				<Item><MainView /></Item>
 			</Grid>
 		</Grid>

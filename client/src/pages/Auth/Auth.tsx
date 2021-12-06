@@ -9,7 +9,12 @@ import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/s
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 import path from '../../constants/path';
-import isValid from '../../utils/isValid';
+
+export interface IsignUpErrors {
+	name: string;
+	password: string;
+	email:string;
+}
 
 const Auth = () => {
 	const user = useAuth();
@@ -21,10 +26,7 @@ const Auth = () => {
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '', resetPassword: undefined });
-	const [isValidEmail, setIsValidEmail] = useState(true);
-	const [isValidName, setIsValidName] = useState(true);
-	const [isValidPassword, setIsValidPassword] = useState(true);
-	const [isValidResePassword, setIsValidResePassword] = useState(true);
+	const [errorMessage, setErrorMessage] = useState<IsignUpErrors>({ email: '', password: '', name: '' });
 	const [showPassword, setShowPassword] = useState(false);
 	const [open, setOpen] = React.useState(false);
 
@@ -38,10 +40,6 @@ const Auth = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setIsValidEmail(isValid(form.email, 'email'));
-		setIsValidName(isValid(`${form.firstName} ${form.lastName}`, 'name'));
-		setIsValidPassword(isValid(form.password, 'password'));
-		setIsValidResePassword(form.password === form.resetPassword);
 		try {
 			let userData;
 
@@ -55,9 +53,14 @@ const Auth = () => {
 			dispatch(setCredentials(userData));
 
 			history.push('/');
-		} catch (err) {
-			console.log(err);
-			// TODO: Iscitati ovaj error, i onda ovisno o tome rijesiti validaciju
+		} catch (err:any) {
+			setErrorMessage(
+				{
+					email: err.data.errors.map((element:any) => { if (element.param === 'email') { return element.msg; } return null; }),
+					name: err.data.errors.map((element:any) => { if (element.param === 'name') { return element.msg; } return null; }),
+					password: err.data.errors.map((element:any) => { if (element.param === 'password') { return `${element.msg} `; } return null; }) }
+			);
+			console.log(errorMessage);
 		}
 	};
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -107,13 +110,13 @@ const Auth = () => {
 						<Grid container spacing={2}>
 							{isSignup && (
 								<>
-									<Input name='firstName' label='First Name' handleChange={handleChange} isValid={isValidName} autoFocus half />
-									<Input name='lastName' label='Last Name' handleChange={handleChange} isValid={isValidName} half />
+									<Input name='firstName' label='First Name' handleChange={handleChange} errorMessage={errorMessage.name} autoFocus half />
+									<Input name='lastName' label='Last Name' handleChange={handleChange} errorMessage={errorMessage.name} half />
 								</>
 							)}
-							<Input name='email' label='Email Address' handleChange={handleChange} type='email' isValid={isValidEmail} />
-							<Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} isValid={isValidPassword} handleShowPassword={() => setShowPassword(!showPassword)} />
-							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} isValid={isValidResePassword} type='password' />}
+							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} errorMessage={errorMessage.password} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.password} type='password' />}
 						</Grid>
 						<Button
 							type='submit'

@@ -10,11 +10,11 @@ interface Props {
   half?: boolean,
   autoFocus?: boolean,
   type?: string,
-	isValid?:boolean,
+	errorMessage?:string
   handleShowPassword?: () => void,
 }
 
-const Input = ({ name, handleChange, label, half, autoFocus, type, handleShowPassword, isValid }: Props) => (
+const Input = ({ name, handleChange, label, half, autoFocus, type, handleShowPassword, errorMessage }: Props) => (
 	<Grid item xs={12} sm={half ? 6 : 12}>
 		<TextField
 			name={name}
@@ -22,9 +22,9 @@ const Input = ({ name, handleChange, label, half, autoFocus, type, handleShowPas
 			variant="outlined"
 			sx={{ margin: 1 }}
 			required
-			error={!isValid}
+			error={errorMessage !== ''}
 			fullWidth
-			helperText={isValid ? '' : `Invalid ${name}`}
+			helperText={errorMessage}
 			label={label}
 			autoFocus={autoFocus}
 			type={type}

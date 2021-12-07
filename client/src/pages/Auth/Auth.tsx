@@ -10,11 +10,11 @@ import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 import path from '../../constants/path';
 
-export interface IsignUpErrors {
-	name: string;
-	password: string;
-	email:string;
-}
+// export interface IsignUpErrors {
+// 	name: string;
+// 	password: string;
+// 	email:string;
+// }
 
 const Auth = () => {
 	const user = useAuth();
@@ -25,8 +25,8 @@ const Auth = () => {
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', firstName: '', lastName: '', resetPassword: undefined });
-	const [errorMessage, setErrorMessage] = useState<IsignUpErrors>({ email: '', password: '', name: '' });
+	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', name: '', resetPassword: undefined });
+	const [errorMessage, setErrorMessage] = useState({ email: '', password: '', name: '' });
 	const [showPassword, setShowPassword] = useState(false);
 	const [open, setOpen] = React.useState(false);
 
@@ -39,13 +39,13 @@ const Auth = () => {
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		setErrorMessage({ email: '', password: '', name: '' });
 		event.preventDefault();
 		try {
 			let userData;
 
 			if (isSignup) {
-				const name = `${form.firstName} ${form.lastName}`;
-				userData =	await register({ name, email: form.email, password: form.password }).unwrap();
+				userData =	await register({ name: form.name, email: form.email, password: form.password }).unwrap();
 			} else {
 				userData = await login(form).unwrap();
 			}
@@ -54,11 +54,24 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err:any) {
+			console.log(err.data.errors);
 			setErrorMessage(
 				{
-					email: err.data.errors.map((element:any) => { if (element.param === 'email') { return element.msg; } return null; }),
-					name: err.data.errors.map((element:any) => { if (element.param === 'name') { return element.msg; } return null; }),
-					password: err.data.errors.map((element:any) => { if (element.param === 'password') { return `${element.msg} `; } return null; }) }
+					email: err.data.errors.map((e:any) => {
+						if (e.param === 'email') return e.msg;
+
+						return '';
+					}).filter(Boolean),
+					name: err.data.errors.map((e:any) => {
+						if (e.param === 'name') return e.msg;
+
+						return '';
+					}).filter(Boolean),
+					password: err.data.errors.map((e:any) => {
+						if (e.param === 'password') return `${e.msg} `;
+
+						return '';
+					}).filter(Boolean) }
 			);
 			console.log(errorMessage);
 		}
@@ -108,15 +121,10 @@ const Auth = () => {
 						onClick={handleClick}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
-							{isSignup && (
-								<>
-									<Input name='firstName' label='First Name' handleChange={handleChange} errorMessage={errorMessage.name} autoFocus half />
-									<Input name='lastName' label='Last Name' handleChange={handleChange} errorMessage={errorMessage.name} half />
-								</>
-							)}
-							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email} type='email' />
-							<Input name='password' label='Password' handleChange={handleChange} errorMessage={errorMessage.password} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
-							{isSignup && 	<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.password} type='password' />}
+							{isSignup && <Input name='name' label='Full Name' handleChange={handleChange} errorMessage={errorMessage.name[errorMessage.name.length - 1]} autoFocus />}
+							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[errorMessage.email.length - 1]} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} errorMessage={errorMessage.password[errorMessage.password.length - 1]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{isSignup && <Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.password[errorMessage.password.length - 1]} type='password' />}
 						</Grid>
 						<Button
 							type='submit'

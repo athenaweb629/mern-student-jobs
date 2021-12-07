@@ -16,13 +16,14 @@ interface Props {
 
 const Input = ({ name, handleChange, label, half, autoFocus, type, handleShowPassword, errorMessage }: Props) => (
 	<Grid item xs={12} sm={half ? 6 : 12}>
+		{console.log(errorMessage)}
 		<TextField
 			name={name}
 			onChange={handleChange}
 			variant="outlined"
 			sx={{ margin: 1 }}
 			required
-			error={errorMessage !== ''}
+			error={!!errorMessage}
 			fullWidth
 			helperText={errorMessage}
 			label={label}

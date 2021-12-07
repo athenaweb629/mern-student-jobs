@@ -12,10 +12,8 @@ export interface User {
 export interface LoginRequest {
 	email: string;
 	password: string;
-	name?:string;
 	resetPassword?:string;
-	firstName?:string;
-	lastName?:string;
+	name: string;
 }
 
 export const api = createApi({

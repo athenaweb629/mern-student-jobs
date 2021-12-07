@@ -18,7 +18,7 @@ export const loginController = async (req: Request, res: Response) => {
 		const user = await User.findOne({ email });
 
 		if (!user) {
-			return res.status(404).json({ message: 'Incorrect credentials' });
+			return res.status(404).json({ message: `User with that e-mail doesn't exist` });
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
@@ -28,17 +28,15 @@ export const loginController = async (req: Request, res: Response) => {
 		}
 
 		if (isMatch) {
-			const token = jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' }); 
+			const token = await jwt.sign({ email }, process.env.SECRET, { expiresIn: '1h' }); 
+				
+			return res.send({  email: user.email, name: user.name, role: user.role, token });
+		} 
 
-			return res.send({ 
-				email: user.email,
-				name: user.name,
-				role: user.role,
-				token
-			});
-		}
+		res.status(400).send({ message: 'Incorrect credentials' });
 	} catch (error) {
-		console.log(error);
+		console.log(error)
+		res.send({ message: error });
 	}
 
 	return res.status(500);

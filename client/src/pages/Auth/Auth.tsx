@@ -52,7 +52,7 @@ const Auth = () => {
 			let userData;
 
 			if (isSignup) {
-				userData = await register({ name: form.name, email: form.email, password: form.password, }).unwrap();
+				userData = await register(form).unwrap();
 			} else {
 				userData = await login(form).unwrap();
 			}

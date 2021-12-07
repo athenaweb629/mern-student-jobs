@@ -1,50 +1,40 @@
 import { check } from 'express-validator';
 
 export const validSignUp = [
-  check('name', 'Name is required')
-    .notEmpty()
-    .isLength({ min: 4, max: 32 })
-    .withMessage('name must be between 3 to 32 characters'),
+  check('name')
+    .notEmpty().withMessage('Name is required')
+    .isLength({ min: 4 }).withMessage('Name must contain at least 4 characters'),
 
   check('email')
-    .isEmail()
-    .withMessage('Must be a valid email address'),
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Must be a valid email address'),
 
-  check('password', 'password is required')
-    .notEmpty(),
-
-  check('password')
-    .isLength({ min: 6 })
-    .withMessage('Password must contain at least 6 characters').matches(/\d/)
-    .withMessage('password must contain a number'),
+  check('password', 'Password is required')
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 6 }).withMessage('Password must contain at least 6 characters')
+    .matches(/\d/).withMessage('Password must contain a number'),
 ];
 
 export const validLogin = [
   check('email')
-    .isEmail()
-    .withMessage('Must be a valid email address'),
-
-  check('password', 'password is required')
-    .notEmpty(),
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Must be a valid email address'),
 
   check('password')
-    .isLength({ min: 6 })
-    .withMessage('Password must contain at least 6 characters').matches(/\d/)
-    .withMessage('password must contain a number'),
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 6 }).withMessage('Password must contain at least 6 characters')
+    .matches(/\d/).withMessage('Password must contain a number'),
 ];
 
 export const forgotPasswordValidator = [
   check('email')
-    .not()
-    .isEmpty()
-    .isEmail()
-    .withMessage('Must be a valid email address'),
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Must be a valid email address'),
 ];
 
 export const resetPasswordValidator = [
   check('password')
-    .not()
-    .isEmpty()
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least  6 characters long'),
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 6 }).withMessage('Password must contain at least 6 characters')
+    .matches(/\d/).withMessage('Password must contain a number'),
 ];

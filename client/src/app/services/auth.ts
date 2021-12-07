@@ -12,7 +12,7 @@ export interface User {
 export interface LoginRequest {
 	email: string;
 	password: string;
-	resetPassword?:string;
+	confirmPassword?:string;
 	name: string;
 }
 

@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, Alert, Snackbar } from '@mui/material';
+import {
+	Avatar,
+	Button,
+	CssBaseline,
+	Paper,
+	Box,
+	Grid,
+	Typography,
+	Alert,
+	Snackbar,
+} from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { setCredentials } from '../../features/auth/authSlice';
-import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
+import {
+	useLoginMutation,
+	LoginRequest,
+	useRegisterMutation,
+} from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 import Input from './Input';
 import path from '../../constants/path';
@@ -24,9 +38,21 @@ const Auth = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = React.useState<LoginRequest>({ email: '', password: '', name: '', resetPassword: undefined });
-	const [errorMessage, setErrorMessage] = useState({ email: '', password: '', name: '' });
+	const [isSignup, setIsSignup] = useState(
+		!location.pathname.includes('login')
+	);
+	const [form, setForm] = React.useState<LoginRequest>({
+		email: '',
+		password: '',
+		name: '',
+		confirmPassword: '',
+	});
+	const [errorMessage, setErrorMessage] = useState({
+		email: '',
+		password: '',
+		name: '',
+		confirmPassword: '',
+	});
 	const [showPassword, setShowPassword] = useState(false);
 	const [open, setOpen] = React.useState(false);
 
@@ -39,13 +65,27 @@ const Auth = () => {
 	}, []);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		setErrorMessage({ email: '', password: '', name: '' });
 		event.preventDefault();
+		setErrorMessage({ email: '', password: '', name: '', confirmPassword: '' });
+		console.log(form);
+		if (form.password !== form.confirmPassword) {
+			setErrorMessage((prevErrorMessage) => ({
+				...prevErrorMessage,
+				confirmPassword: 'Passwords must match',
+				password: 'Passwords must match',
+			}));
+
+			return;
+		}
 		try {
 			let userData;
 
 			if (isSignup) {
-				userData =	await register({ name: form.name, email: form.email, password: form.password }).unwrap();
+				userData = await register({
+					name: form.name,
+					email: form.email,
+					password: form.password,
+				}).unwrap();
 			} else {
 				userData = await login(form).unwrap();
 			}
@@ -53,26 +93,32 @@ const Auth = () => {
 			dispatch(setCredentials(userData));
 
 			history.push('/');
-		} catch (err:any) {
+		} catch (err: any) {
 			console.log(err.data.errors);
-			setErrorMessage(
-				{
-					email: err.data.errors.map((e:any) => {
+			setErrorMessage((prevErrorMessage) => ({
+				...prevErrorMessage,
+				email: err?.data?.errors
+					?.map((e: any) => {
 						if (e.param === 'email') return e.msg;
 
 						return '';
-					}).filter(Boolean),
-					name: err.data.errors.map((e:any) => {
+					})
+					.filter(Boolean),
+				name: err?.data?.errors
+					?.map((e: any) => {
 						if (e.param === 'name') return e.msg;
 
 						return '';
-					}).filter(Boolean),
-					password: err.data.errors.map((e:any) => {
+					})
+					.filter(Boolean),
+				password: err?.data?.errors
+					?.map((e: any) => {
 						if (e.param === 'password') return `${e.msg} `;
 
 						return '';
-					}).filter(Boolean) }
-			);
+					})
+					.filter(Boolean),
+			}));
 			console.log(errorMessage);
 		}
 	};
@@ -107,7 +153,13 @@ const Auth = () => {
 			/>
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
-					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+					sx={{
+						my: 8,
+						mx: 4,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+					}}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
@@ -121,10 +173,43 @@ const Auth = () => {
 						onClick={handleClick}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
-							{isSignup && <Input name='name' label='Full Name' handleChange={handleChange} errorMessage={errorMessage.name[errorMessage.name.length - 1]} autoFocus />}
-							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[errorMessage.email.length - 1]} type='email' />
-							<Input name='password' label='Password' handleChange={handleChange} errorMessage={errorMessage.password[errorMessage.password.length - 1]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
-							{isSignup && <Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.password[errorMessage.password.length - 1]} type='password' />}
+							{isSignup && (
+								<Input
+									name='name'
+									label='Full Name'
+									handleChange={handleChange}
+									errorMessage={errorMessage.name[errorMessage.name.length - 1]}
+									autoFocus
+								/>
+							)}
+							<Input
+								name='email'
+								label='Email Address'
+								handleChange={handleChange}
+								errorMessage={errorMessage.email[errorMessage.email.length - 1]}
+								type='email'
+							/>
+							<Input
+								name='password'
+								label='Password'
+								handleChange={handleChange}
+								errorMessage={
+									typeof errorMessage.password === 'string'
+										? errorMessage.password
+										: errorMessage.password[errorMessage?.password['length'] - 1]
+								}
+								type={showPassword ? 'text' : 'password'}
+								handleShowPassword={() => setShowPassword(!showPassword)}
+							/>
+							{isSignup && (
+								<Input
+									name='confirmPassword'
+									label='Repeat Password'
+									handleChange={handleChange}
+									errorMessage={errorMessage.confirmPassword}
+									type='password'
+								/>
+							)}
 						</Grid>
 						<Button
 							type='submit'
@@ -138,9 +223,10 @@ const Auth = () => {
 								<Button>Forgot password?</Button>
 							</Grid>
 							<Grid item>
-								<Button
-									onClick={changeAuthType}>
-									{isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up"}
+								<Button onClick={changeAuthType}>
+									{isSignup
+										? 'Already have an account? Sign in'
+										: "Don't have an account? Sign Up"}
 								</Button>
 							</Grid>
 						</Grid>

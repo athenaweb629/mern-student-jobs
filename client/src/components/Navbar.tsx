@@ -114,13 +114,13 @@ const Navbar = () => {
 		<Box sx={{ flexGrow: 1, margin: '30px' }}>
 			<AppBar position="static" sx={{ background: '#FFFFFF', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.05)', borderRadius: '20px' }}>
 				<Toolbar>
+					<DoSomething />
 					<Box sx={{ display: 'flex', alignItems: 'center' }}>
 						<Avatar sx={{ mr: 1 }} alt="Avatar" src={avatar} />
 						<Typography variant="h6" noWrap component="div" color="text.primary" sx={{ display: { xs: 'none', sm: 'block' } }}>
 							{user?.name}
 						</Typography>
 					</Box>
-					<DoSomething />
 					<Search>
 						<SearchWrapper>
 							<SearchIcon />

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import path from '../../constants/path';
 import { RootState } from '../store';
 
@@ -21,9 +22,8 @@ export interface Payload {
 export interface LoginRequest {
 	email: string;
 	password: string;
-	name?:string;
-	firstName?:string;
-	lastName?:string;
+	confirmPassword?:string;
+	name: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -51,11 +51,7 @@ export const api = createApi({
 			query: (credentials) => ({ url: path.api.LOGIN, method: 'POST', body: credentials, }),
 		}),
 		register: builder.mutation<User, LoginRequest>({
-			query: (body) => ({
-				url: path.api.REGISTER,
-				method: 'POST',
-				body,
-			}),
+			query: (body) => ({ url: path.api.REGISTER, method: 'POST', body }),
 		}),
 		resetPassword: builder.mutation<Payload, ResetPasswordRequest>({
 			query: (data) => ({

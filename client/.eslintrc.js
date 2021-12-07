@@ -16,6 +16,7 @@ module.exports = {
 	rules: {
 		indent: [2, 'tab', { SwitchCase: 1, VariableDeclarator: 1 }],
 		'no-tabs': 0,
+		'dot-notation': 0,
 		'react/prop-types': 0,
 		'react/jsx-indent': [2, 'tab'],
 		'react/jsx-indent-props': [2, 'tab'],
@@ -32,6 +33,7 @@ module.exports = {
 		'no-confusing-arrow': 0,
 		'implicit-arrow-linebreak': 0,
 		'jsx-quotes': 0,
+		'no-useless-escape': 0,
 		'react/state-in-constructor': 0,
 		'no-mixed-spaces-and-tabs': 0,
 		'react/no-unescaped-entities': 0,

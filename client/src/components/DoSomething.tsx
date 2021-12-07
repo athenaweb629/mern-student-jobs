@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
 import { Button, Typography } from '@mui/material';
 
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useProtectedMutation } from '../app/services/auth';
+
+import { logout } from '../features/auth/authSlice';
 
 const DoSomething = () => {
 	const [doSomething] = useProtectedMutation();
 	const [message, setMessage] = useState('Loading...');
+	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const handleClick = async () => {
-		const response = await doSomething().unwrap();
+		try {
+			const response = await doSomething().unwrap();
 
-		console.log(response.message);
-		setMessage(response.message);
+			setMessage(response.message);
+		} catch (error: any) {
+			if (error.data.name === 'TokenExpiredError') {
+				dispatch(logout());
+				history.push('/login');
+			}
+		}
 	};
 
 	return (

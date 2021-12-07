@@ -1,34 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import {
-	Avatar,
-	Button,
-	CssBaseline,
-	Paper,
-	Box,
-	Grid,
-	Typography,
-	Alert,
-	Snackbar,
-} from '@mui/material';
+import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
+import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
-import {
-	useLoginMutation,
-	LoginRequest,
-	useRegisterMutation,
-} from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
-import Input from './Input';
 import path from '../../constants/path';
+import Input from './Input';
 
-// export interface IsignUpErrors {
-// 	name: string;
-// 	password: string;
-// 	email:string;
-// }
+export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
+
+type Param = 'name' | 'password' | 'confirmPassword' | 'email';
 
 const Auth = () => {
 	const user = useAuth();
@@ -41,20 +25,10 @@ const Auth = () => {
 	const [isSignup, setIsSignup] = useState(
 		!location.pathname.includes('login')
 	);
-	const [form, setForm] = React.useState<LoginRequest>({
-		email: '',
-		password: '',
-		name: '',
-		confirmPassword: '',
-	});
-	const [errorMessage, setErrorMessage] = useState({
-		email: '',
-		password: '',
-		name: '',
-		confirmPassword: '',
-	});
+	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', });
+	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [showPassword, setShowPassword] = useState(false);
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 
 	const handleClick = () => {
 		setOpen(true);
@@ -66,26 +40,19 @@ const Auth = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setErrorMessage({ email: '', password: '', name: '', confirmPassword: '' });
-		console.log(form);
-		if (form.password !== form.confirmPassword) {
-			setErrorMessage((prevErrorMessage) => ({
-				...prevErrorMessage,
-				confirmPassword: 'Passwords must match',
-				password: 'Passwords must match',
-			}));
+		setErrorMessage({ name: [], email: [], password: [], confirmPassword: [] });
+
+		if (isSignup && form.password !== form.confirmPassword) {
+			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, confirmPassword: ['Passwords must match'], password: ['Passwords must match'], }));
 
 			return;
 		}
+
 		try {
 			let userData;
 
 			if (isSignup) {
-				userData = await register({
-					name: form.name,
-					email: form.email,
-					password: form.password,
-				}).unwrap();
+				userData = await register({ name: form.name, email: form.email, password: form.password, }).unwrap();
 			} else {
 				userData = await login(form).unwrap();
 			}
@@ -94,32 +61,13 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err: any) {
-			console.log(err.data.errors);
-			setErrorMessage((prevErrorMessage) => ({
-				...prevErrorMessage,
-				email: err?.data?.errors
-					?.map((e: any) => {
-						if (e.param === 'email') return e.msg;
+			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
-						return '';
-					})
-					.filter(Boolean),
-				name: err?.data?.errors
-					?.map((e: any) => {
-						if (e.param === 'name') return e.msg;
+			err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
+				errorMessages[param] = [...errorMessages[param], msg];
+			});
 
-						return '';
-					})
-					.filter(Boolean),
-				password: err?.data?.errors
-					?.map((e: any) => {
-						if (e.param === 'password') return `${e.msg} `;
-
-						return '';
-					})
-					.filter(Boolean),
-			}));
-			console.log(errorMessage);
+			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
 		}
 	};
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -178,7 +126,7 @@ const Auth = () => {
 									name='name'
 									label='Full Name'
 									handleChange={handleChange}
-									errorMessage={errorMessage.name[errorMessage.name.length - 1]}
+									errorMessage={errorMessage.name[0]}
 									autoFocus
 								/>
 							)}
@@ -186,18 +134,14 @@ const Auth = () => {
 								name='email'
 								label='Email Address'
 								handleChange={handleChange}
-								errorMessage={errorMessage.email[errorMessage.email.length - 1]}
+								errorMessage={errorMessage.email[0]}
 								type='email'
 							/>
 							<Input
 								name='password'
 								label='Password'
 								handleChange={handleChange}
-								errorMessage={
-									typeof errorMessage.password === 'string'
-										? errorMessage.password
-										: errorMessage.password[errorMessage?.password['length'] - 1]
-								}
+								errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]}
 								type={showPassword ? 'text' : 'password'}
 								handleShowPassword={() => setShowPassword(!showPassword)}
 							/>
@@ -206,7 +150,7 @@ const Auth = () => {
 									name='confirmPassword'
 									label='Repeat Password'
 									handleChange={handleChange}
-									errorMessage={errorMessage.confirmPassword}
+									errorMessage={errorMessage.confirmPassword[0]}
 									type='password'
 								/>
 							)}

@@ -3,6 +3,7 @@ import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import MuiAlert from '@mui/material/Alert';
 
 import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
@@ -13,6 +14,8 @@ import Input from './Input';
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
 
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
+
+const Alert = React.forwardRef((props:any) => <MuiAlert elevation={6} variant="filled" {...props} />);
 
 const Auth = () => {
 	const user = useAuth();
@@ -28,11 +31,6 @@ const Auth = () => {
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [showPassword, setShowPassword] = useState(false);
-	const [open, setOpen] = useState(false);
-
-	const handleClick = () => {
-		setOpen(true);
-	};
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -61,10 +59,11 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err: any) {
+			console.log(err);
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
 			err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
-				errorMessages[param] = [...errorMessages[param], msg];
+				errorMessages[param] = [...errorMessages[param], ` ${msg}.`];
 			});
 
 			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
@@ -118,7 +117,6 @@ const Auth = () => {
 						component='form'
 						noValidate
 						onSubmit={handleSubmit}
-						onClick={handleClick}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
@@ -174,6 +172,11 @@ const Auth = () => {
 								</Button>
 							</Grid>
 						</Grid>
+						{(!!errorMessage.name.length) && (<Alert severity="error">Error! {errorMessage.name}</Alert>)}
+						{(!!errorMessage.email.length) && (<Alert severity="error">Error! {errorMessage.email}</Alert>)}
+						{(!!errorMessage.password.length) && (<Alert severity="error">Error! {errorMessage.password}</Alert>)}
+						{(!!errorMessage.confirmPassword.length) && (<Alert severity="error">Error! {errorMessage.confirmPassword}</Alert>)}
+
 					</Box>
 				</Box>
 			</Grid>

@@ -20,9 +20,9 @@ const Main = () => (
 				<Item><Sidebar /></Item>
 			</Grid>
 			<Grid item xs={12} sm={7} md={8} lg={9}>
-				<Item><CreatePost /></Item>
+				<CreatePost />
 				<br />
-				<Item><MainView /></Item>
+				<MainView />
 			</Grid>
 		</Grid>
 	</Box>

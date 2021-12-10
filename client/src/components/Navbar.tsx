@@ -3,7 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, MenuItem, Menu, Avatar } from '@mui/material';
 import { Search as SearchIcon, AccountCircle, Mail, Notifications, Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { avatar } from '../assets/images';
 import { logout } from '../features/auth/authSlice';
 import useAuth from '../hooks/useAuth';
@@ -100,7 +100,7 @@ const Navbar = () => {
 				</IconButton>
 				<p>Notifications</p>
 			</MenuItem>
-			<MenuItem>
+			<MenuItem component={Link} to="/profile">
 				<IconButton size="large" aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit">
 					<AccountCircle color="primary" />
 				</IconButton>
@@ -137,7 +137,7 @@ const Navbar = () => {
 								<Notifications color="primary" />
 							</Badge>
 						</IconButton>
-						<IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" color="inherit">
+						<IconButton component={Link} to="/profile" size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" color="inherit">
 							<AccountCircle color="primary" />
 						</IconButton>
 						<IconButton size="large" aria-label="logout" color="inherit" onClick={() => { dispatch(logout()); history.push('/login'); }}>

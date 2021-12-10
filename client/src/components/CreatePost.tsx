@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Box, TextField, Button } from '@mui/material';
+import { Typography, Box, TextField, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useAuth from '../hooks/useAuth';
 import { useCreatePostMutation } from '../app/services/auth';
 
@@ -26,22 +27,28 @@ const CreatePost = () => {
 
 	return (
 		<>
-			<Typography variant="h5">Crete a new job offer</Typography>
-			<Box
-				component="form"
-				sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }}
-				noValidate
-				autoComplete="off"
-				onSubmit={handleSubmit}
-			>
-				<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
-				<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
-				<TextField label="Level" variant="standard" name="level" value={form.level} onChange={handleChange} />
-				<TextField label="Availability" variant="standard" name="availability" value={form.availability} onChange={handleChange} />
-				<Button variant="contained" type="submit">Create Job Offer</Button>
-			</Box>
-		</>
+			<Accordion sx={{ borderRadius: '20px !important', outline: 'none', boxShadow: '0px 0px 10px rgb(0 0 0 / 5%) ', }}>
 
+				<AccordionSummary sx={{ display: 'flex', alignItems: 'center', borderRadius: '20px', background: '#FFFFFF' }} expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+					<Typography variant="h5" sx={{ color: 'text.secondary' }}>Create a new job offer</Typography>
+				</AccordionSummary>
+				<AccordionDetails>
+					<Box
+						component="form"
+						sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }}
+						noValidate
+						autoComplete="off"
+						onSubmit={handleSubmit}
+					>
+						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
+						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
+						<TextField label="Level" variant="standard" name="level" value={form.level} onChange={handleChange} />
+						<TextField label="Availability" variant="standard" name="availability" value={form.availability} onChange={handleChange} />
+						<Button variant="contained" type="submit">Create Job Offer</Button>
+					</Box>
+				</AccordionDetails>
+			</Accordion>
+		</>
 	);
 };
 

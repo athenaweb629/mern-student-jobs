@@ -10,7 +10,6 @@ router.post('/register', validSignUp, registerController);
 router.get('/confirmAccount/:token', confirmUser);
 router.get('/authorizedAction', checkTokenExpiry, doSomething);
 
-
 router.get('/resendEmail', resendEmail);
 router.patch('/forgotPassword', forgotPasswordValidator, forgotPassword);
 router.patch('/resetPassword/:token', resetPasswordValidator, resetPassword);

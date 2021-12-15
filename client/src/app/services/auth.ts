@@ -11,10 +11,11 @@ export interface User {
 }
 
 export interface LoginRequest {
+	name: string;
 	email: string;
 	password: string;
 	confirmPassword?:string;
-	name: string;
+	userType?: string
 }
 
 export const api = createApi({

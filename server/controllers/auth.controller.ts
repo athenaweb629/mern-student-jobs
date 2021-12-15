@@ -43,7 +43,9 @@ export const loginController = async (req: Request, res: Response) => {
 };
 
 export const registerController = async (req: Request, res: Response) => {
-	const { name, email, password } = req.body;
+	const { name, email, password, userType } = req.body;
+
+	// TODO: sada dobivas userType ovdje, iskoristi to da odredimo tip racuna.
 
 	const err = validationResult(req);
 

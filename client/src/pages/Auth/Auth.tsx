@@ -3,7 +3,10 @@ import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import SchoolIcon from '@mui/icons-material/School';
+import BusinessIcon from '@mui/icons-material/Business';
 import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
 import CustomizedSnackbars from '../../components/Snackbar';
@@ -23,11 +26,19 @@ const Auth = () => {
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', });
+	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
 	const [open, setOpen] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
+
+	const handleUserType = (event: any, newUserType: any) => {
+		setForm((prevForm) => ({ ...prevForm, userType: newUserType }));
+	};
+
+	const handleClick = () => {
+		setOpen(true);
+	};
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -117,7 +128,27 @@ const Auth = () => {
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
-								<Input name='name' label='Full Name' handleChange={handleChange} errorMessage={errorMessage.name[0]} autoFocus />
+								<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
+									<Box display="flex" justifyContent="center">
+										<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
+											<ToggleButton value="student" aria-label="student">
+												Student <SchoolIcon sx={{ marginLeft: '10px' }} />
+											</ToggleButton>
+											<ToggleButton value="company" aria-label="company">
+												Company <BusinessIcon sx={{ marginLeft: '10px' }} />
+											</ToggleButton>
+										</ToggleButtonGroup>
+									</Box>
+								</Grid>
+							)}
+							{isSignup && (
+								<Input
+									name='name'
+									label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
+									handleChange={handleChange}
+									errorMessage={errorMessage.name[0]}
+									autoFocus
+								/>
 							)}
 							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
 							<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />

@@ -3,19 +3,16 @@ import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import MuiAlert from '@mui/material/Alert';
 
 import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
+import CustomizedSnackbars from '../../components/Snackbar';
 import useAuth from '../../hooks/useAuth';
 import path from '../../constants/path';
 import Input from './Input';
 
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
-
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
-
-const Alert = React.forwardRef((props:any) => <MuiAlert elevation={6} variant="filled" {...props} />);
 
 const Auth = () => {
 	const user = useAuth();
@@ -25,11 +22,11 @@ const Auth = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const [isSignup, setIsSignup] = useState(
-		!location.pathname.includes('login')
-	);
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
+	const [alertMessage, setAlertMessage] = useState('');
+	const [open, setOpen] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
 	useEffect(() => {
@@ -59,16 +56,21 @@ const Auth = () => {
 
 			history.push('/');
 		} catch (err: any) {
-			console.log(err);
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
-			err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
-				errorMessages[param] = [...errorMessages[param], ` ${msg}.`];
-			});
+			if (err.data.message || err.data.email) {
+				setOpen(true);
+				setAlertMessage(err?.data?.message || err?.data?.email);
+			} else {
+				err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
+					errorMessages[param] = [...errorMessages[param], ` ${msg}.`];
+				});
 
-			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+				setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+			}
 		}
 	};
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};
@@ -81,6 +83,7 @@ const Auth = () => {
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
+			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />
 			<CssBaseline />
 			<Grid
 				item
@@ -100,13 +103,7 @@ const Auth = () => {
 			/>
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
-					sx={{
-						my: 8,
-						mx: 4,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}>
+					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
@@ -120,37 +117,12 @@ const Auth = () => {
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
-								<Input
-									name='name'
-									label='Full Name'
-									handleChange={handleChange}
-									errorMessage={errorMessage.name[0]}
-									autoFocus
-								/>
+								<Input name='name' label='Full Name' handleChange={handleChange} errorMessage={errorMessage.name[0]} autoFocus />
 							)}
-							<Input
-								name='email'
-								label='Email Address'
-								handleChange={handleChange}
-								errorMessage={errorMessage.email[0]}
-								type='email'
-							/>
-							<Input
-								name='password'
-								label='Password'
-								handleChange={handleChange}
-								errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]}
-								type={showPassword ? 'text' : 'password'}
-								handleShowPassword={() => setShowPassword(!showPassword)}
-							/>
+							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
 							{isSignup && (
-								<Input
-									name='confirmPassword'
-									label='Repeat Password'
-									handleChange={handleChange}
-									errorMessage={errorMessage.confirmPassword[0]}
-									type='password'
-								/>
+								<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
 							)}
 						</Grid>
 						<Button
@@ -172,11 +144,6 @@ const Auth = () => {
 								</Button>
 							</Grid>
 						</Grid>
-						{(!!errorMessage.name.length) && (<Alert severity="error">Error! {errorMessage.name}</Alert>)}
-						{(!!errorMessage.email.length) && (<Alert severity="error">Error! {errorMessage.email}</Alert>)}
-						{(!!errorMessage.password.length) && (<Alert severity="error">Error! {errorMessage.password}</Alert>)}
-						{(!!errorMessage.confirmPassword.length) && (<Alert severity="error">Error! {errorMessage.confirmPassword}</Alert>)}
-
 					</Box>
 				</Box>
 			</Grid>

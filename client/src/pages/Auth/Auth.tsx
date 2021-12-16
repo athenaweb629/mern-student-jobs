@@ -36,10 +36,6 @@ const Auth = () => {
 		setForm((prevForm) => ({ ...prevForm, userType: newUserType }));
 	};
 
-	const handleClick = () => {
-		setOpen(true);
-	};
-
 	useEffect(() => {
 		if (user) history.push(path.BASE);
 	}, []);

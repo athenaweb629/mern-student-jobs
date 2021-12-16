@@ -9,6 +9,8 @@ export default {
 		REGISTER: '/user/register',
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
 		RESEND_EMAIL: '/user/resendEmail',
+		RESET_PASSWORD: '/resetPassword/:token',
+		FORGOT_PASSWORD: '/forgotPassword'
 	},
 
 	build: (path:string, ...params:Array<any>):string => {

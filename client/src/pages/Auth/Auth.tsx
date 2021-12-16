@@ -26,6 +26,7 @@ const Auth = () => {
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
+	const [isForgotPassword, setIsForgotPassword] = useState(!location.pathname.includes(path.FORGOT_PASSWORD));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
@@ -61,7 +62,7 @@ const Auth = () => {
 
 			dispatch(setCredentials(userData));
 
-			history.push('/');
+			history.push(path.BASE);
 		} catch (err: any) {
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
@@ -86,6 +87,12 @@ const Auth = () => {
 		history.push(isSignup ? path.LOGIN : path.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
+	};
+
+	const changeForgotPasswordType = () => {
+		history.push(path.FORGOT_PASSWORD);
+
+		setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
 	};
 
 	return (
@@ -161,7 +168,7 @@ const Auth = () => {
 						</Button>
 						<Grid container>
 							<Grid item xs>
-								<Button>Forgot password?</Button>
+								<Button onClick={changeForgotPasswordType}>Forgot password?</Button>
 							</Grid>
 							<Grid item>
 								<Button onClick={changeAuthType}>

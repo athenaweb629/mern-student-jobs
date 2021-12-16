@@ -25,7 +25,7 @@ const Auth = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
@@ -83,7 +83,7 @@ const Auth = () => {
 	};
 
 	const changeAuthType = () => {
-		history.push(isSignup ? '/login' : '/register');
+		history.push(isSignup ? path.LOGIN : path.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 	};

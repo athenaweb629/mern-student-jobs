@@ -2,6 +2,7 @@ export default {
 	BASE: '/',
 	LOGIN: '/login',
 	REGISTER: '/register',
+	FORGOT_PASSWORD: '/forgot-password',
 
 	api: {
 		LOGIN: '/user/login',
@@ -9,6 +10,8 @@ export default {
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
 		AUTHORIZED_ACTION: '/user/authorizedAction',
 		RESEND_EMAIL: '/user/resendEmail',
+		RESET_PASSWORD: '/resetPassword/:token',
+		FORGOT_PASSWORD: '/forgotPassword'
 		POSTS: '/posts',
 	},
 

@@ -40,6 +40,7 @@ ReactDOM.render(
 						<PrivateRoute exact path={path.BASE} component={App} />
 						<Route exact path={path.LOGIN} component={Auth} />
 						<Route exact path={path.REGISTER} component={Auth} />
+						<Route exact path={path.FORGOT_PASSWORD} component={Auth} />
 					</Switch>
 				</BrowserRouter>
 			</PersistGate>

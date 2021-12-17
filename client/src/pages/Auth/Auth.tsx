@@ -9,12 +9,12 @@ import SchoolIcon from '@mui/icons-material/School';
 import BusinessIcon from '@mui/icons-material/Business';
 import { useLoginMutation, LoginRequest, useRegisterMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
+import CustomizedSnackbars from '../../components/Snackbar';
 import useAuth from '../../hooks/useAuth';
 import path from '../../constants/path';
 import Input from './Input';
 
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
-
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
 
 const Auth = () => {
@@ -24,11 +24,13 @@ const Auth = () => {
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const history = useHistory();
+
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
-	const [showPassword, setShowPassword] = useState(false);
+	const [alertMessage, setAlertMessage] = useState('');
 	const [open, setOpen] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleUserType = (event: any, newUserType: any) => {
 		setForm((prevForm) => ({ ...prevForm, userType: newUserType }));
@@ -67,13 +69,19 @@ const Auth = () => {
 		} catch (err: any) {
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
-			err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
-				errorMessages[param] = [...errorMessages[param], msg];
-			});
+			if (err.data.message || err.data.email) {
+				setOpen(true);
+				setAlertMessage(err?.data?.message || err?.data?.email);
+			} else {
+				err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
+					errorMessages[param] = [...errorMessages[param], ` ${msg}.`];
+				});
 
-			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+				setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+			}
 		}
 	};
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};
@@ -86,6 +94,7 @@ const Auth = () => {
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
+			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />
 			<CssBaseline />
 			<Grid
 				item
@@ -116,7 +125,6 @@ const Auth = () => {
 						component='form'
 						noValidate
 						onSubmit={handleSubmit}
-						onClick={handleClick}
 						sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2}>
 							{isSignup && (
@@ -142,29 +150,10 @@ const Auth = () => {
 									autoFocus
 								/>
 							)}
-							<Input
-								name='email'
-								label='Email Address'
-								handleChange={handleChange}
-								errorMessage={errorMessage.email[0]}
-								type='email'
-							/>
-							<Input
-								name='password'
-								label='Password'
-								handleChange={handleChange}
-								errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]}
-								type={showPassword ? 'text' : 'password'}
-								handleShowPassword={() => setShowPassword(!showPassword)}
-							/>
+							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
 							{isSignup && (
-								<Input
-									name='confirmPassword'
-									label='Repeat Password'
-									handleChange={handleChange}
-									errorMessage={errorMessage.confirmPassword[0]}
-									type='password'
-								/>
+								<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
 							)}
 						</Grid>
 						<Button

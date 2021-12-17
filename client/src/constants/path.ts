@@ -2,6 +2,7 @@ export default {
 	BASE: '/',
 	LOGIN: '/login',
 	REGISTER: '/register',
+	CHAT: '/chat',
 	FORGOT_PASSWORD: '/forgot-password',
 
 	api: {

@@ -26,7 +26,7 @@ const Auth = () => {
 	const history = useHistory();
 
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
-	const [isForgotPassword, setIsForgotPassword] = useState(!location.pathname.includes(path.FORGOT_PASSWORD));
+	// const [isForgotPassword, setIsForgotPassword] = useState(location.pathname.includes(path.FORGOT_PASSWORD));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
@@ -87,13 +87,13 @@ const Auth = () => {
 		history.push(isSignup ? path.LOGIN : path.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
-		setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
+		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
 	};
 
 	const changeForgotPasswordType = () => {
-		history.push(path.FORGOT_PASSWORD);
-		setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
-		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
+		// history.push(path.FORGOT_PASSWORD);
+		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
+		// setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 	};
 
 	return (
@@ -122,64 +122,64 @@ const Auth = () => {
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
-					{!isForgotPassword ? (
-						<Typography component='h1' variant='h5'>
-							{isSignup ? 'Sign up' : 'Sign in'}
-						</Typography>
+					<Typography component='h1' variant='h5'>
+						{isSignup ? 'Sign up' : 'Sign in'}
+					</Typography>
+					{/* {!isForgotPassword ? (
 					) : (
 						<Typography component='h1' variant='h5'>
 							Forgot password
 						</Typography>
-					)}
+					)} */}
 					<Box
 						component='form'
 						noValidate
 						onSubmit={handleSubmit}
 						sx={{ mt: 1, width: '65%' }}>
-						{!isForgotPassword ? (
+						{/* {!isForgotPassword ? ( */}
+						<Grid container spacing={2}>
+							{isSignup && (
+								<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
+									<Box display="flex" justifyContent="center">
+										<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
+											<ToggleButton value="student" aria-label="student">
+												Student <SchoolIcon sx={{ marginLeft: '10px' }} />
+											</ToggleButton>
+											<ToggleButton value="company" aria-label="company">
+												Company <BusinessIcon sx={{ marginLeft: '10px' }} />
+											</ToggleButton>
+										</ToggleButtonGroup>
+									</Box>
+								</Grid>
+							)}
+							{isSignup && (
+								<Input
+									name='name'
+									label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
+									handleChange={handleChange}
+									errorMessage={errorMessage.name[0]}
+									autoFocus
+								/>
+							)}
+							<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+							<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+							{isSignup && (
+								<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
+							)}
+						</Grid>
+						{/* ) : (
 							<Grid container spacing={2}>
-								{isSignup && (
-									<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
-										<Box display="flex" justifyContent="center">
-											<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
-												<ToggleButton value="student" aria-label="student">
-													Student <SchoolIcon sx={{ marginLeft: '10px' }} />
-												</ToggleButton>
-												<ToggleButton value="company" aria-label="company">
-													Company <BusinessIcon sx={{ marginLeft: '10px' }} />
-												</ToggleButton>
-											</ToggleButtonGroup>
-										</Box>
-									</Grid>
-								)}
-								{isSignup && (
-									<Input
-										name='name'
-										label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
-										handleChange={handleChange}
-										errorMessage={errorMessage.name[0]}
-										autoFocus
-									/>
-								)}
-								<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
-								<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
-								{isSignup && (
-									<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
-								)}
-							</Grid>
-						) : (
-							<Grid container spacing={2}>
 								<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
 							</Grid>
-						)}
-						{!isForgotPassword ? (
-							<Button
-								type='submit'
-								fullWidth
-								variant='contained'
-								sx={{ mt: 3, mb: 2 }}>
-								{isSignup ? 'Sign Up' : 'Sign In'}
-							</Button>
+						)} */}
+						<Button
+							type='submit'
+							fullWidth
+							variant='contained'
+							sx={{ mt: 3, mb: 2 }}>
+							{isSignup ? 'Sign Up' : 'Sign In'}
+						</Button>
+						{/* {!isForgotPassword ? (
 						) : (
 							<Button
 								type='submit'
@@ -188,7 +188,7 @@ const Auth = () => {
 								sx={{ mt: 3, mb: 2 }}>
 								Send the password reset
 							</Button>
-						)}
+						)} */}
 						<Grid container>
 							<Grid item xs>
 								<Button onClick={changeForgotPasswordType}>Forgot password?</Button>

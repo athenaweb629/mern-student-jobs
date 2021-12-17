@@ -12,7 +12,7 @@ export default {
 		AUTHORIZED_ACTION: '/user/authorizedAction',
 		RESEND_EMAIL: '/user/resendEmail',
 		RESET_PASSWORD: '/resetPassword/:token',
-		FORGOT_PASSWORD: '/forgotPassword'
+		FORGOT_PASSWORD: '/forgotPassword',
 		POSTS: '/posts',
 	},
 

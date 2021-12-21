@@ -103,4 +103,6 @@ export const {
 	useCreatePostMutation,
 	useGetPostsQuery,
 	useGetPostByIdQuery,
+	useResetPasswordMutation,
+	useForgotPasswordMutation
 } = api;

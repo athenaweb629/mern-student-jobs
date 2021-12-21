@@ -71,7 +71,7 @@ export const api = createApi({
 		}),
 		forgotPassword: builder.mutation<Email, ForgotPasswordRequest>({
 			query: (email) => ({
-				url: path.FORGOT_PASSWORD,
+				url: path.api.FORGOT_PASSWORD,
 				method: 'PATCH',
 				body: email,
 			}),

@@ -22,6 +22,7 @@ type Param = 'name' | 'password' | 'confirmPassword' | 'email';
 
 const Auth = () => {
 	const user = useAuth();
+	const token = useParams();
 	const [resetPassword] = useResetPasswordMutation();
 	const [forgotPassword] = useForgotPasswordMutation();
 	const [login] = useLoginMutation();
@@ -118,7 +119,6 @@ const Auth = () => {
 	};
 
 	const handleResetPassword = () => {
-		const token = useParams();
 		const props: any = { password: newPassword, token };
 		resetPassword(props);
 		setIsResettPassword(false);
@@ -160,7 +160,14 @@ const Auth = () => {
 							<LockOutlined />
 						</Avatar>
 						<Typography component='h1' variant='h5'>
-							Reset your password
+							<Button
+								type='submit'
+								fullWidth
+								variant='contained'
+								sx={{ mt: 3, mb: 2 }}
+								onClick={handleSubmitForgotPassword}>
+								{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+							</Button>
 						</Typography>
 						<Box
 							component='form'
@@ -175,7 +182,7 @@ const Auth = () => {
 								fullWidth
 								variant='contained'
 								sx={{ mt: 3, mb: 2 }}
-								onClick={handleResetPassword}>
+								onClick={handleSubmitForgotPassword}>
 								{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 							</Button>
 						</Box>
@@ -235,7 +242,7 @@ const Auth = () => {
 									fullWidth
 									variant='contained'
 									sx={{ mt: 3, mb: 2 }}
-									onClick={handleResetPassword}>
+									onClick={handleSubmitForgotPassword}>
 									{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 								</Button>
 								<Grid container>

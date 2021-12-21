@@ -122,7 +122,6 @@ const Auth = () => {
 		const props: any = { password: newPassword, token };
 		resetPassword(props);
 		setIsResettPassword(false);
-		console.log('pa cak sam dosao do tu');
 		history.push('/login');
 		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
 	};
@@ -223,16 +222,14 @@ const Auth = () => {
 										/>
 									)}
 									<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
-									<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+									{!isForgettingPassword && (<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+									)}
 									{isSignup && (
 										<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
 									)}
+
 								</Grid>
-								{/* ) : (
-							<Grid container spacing={2}>
-								<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
-							</Grid>
-						)} */}
+
 								<Button
 									type='submit'
 									fullWidth
@@ -241,16 +238,6 @@ const Auth = () => {
 									onClick={handleResetPassword}>
 									{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 								</Button>
-								{/* {!isForgotPassword ? (
-						) : (
-							<Button
-								type='submit'
-								fullWidth
-								variant='contained'
-								sx={{ mt: 3, mb: 2 }}>
-								Send the password reset
-							</Button>
-						)} */}
 								<Grid container>
 									<Grid item xs>
 										{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
@@ -272,21 +259,6 @@ const Auth = () => {
 					</Grid>
 				)
 			}
-			{/* <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-				<Box
-					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-						<LockOutlined />
-					</Avatar>
-					<Typography component='h1' variant='h5'>
-						{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
-					</Typography>
-					{/* {!isForgotPassword ? (
-					) : (
-						<Typography component='h1' variant='h5'>
-							Forgot password
-						</Typography>
-					)} */}
 
 		</Grid>
 	);

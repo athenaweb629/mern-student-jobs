@@ -3,7 +3,6 @@ import { Main, Auth, Chat } from './pages';
 
 import path from './constants/path';
 import PrivateRoute from './utils/PrivateRoute';
-import { store } from './app/store';
 
 import { Navbar } from './components';
 
@@ -19,6 +18,7 @@ const App = () => {
 				<PrivateRoute exact path={path.BASE} component={Main} />
 				<Route exact path={path.LOGIN} component={Auth} />
 				<Route exact path={path.REGISTER} component={Auth} />
+				<Route exact path={path.FORGOT_PASSWORD} component={Auth} />
 				<PrivateRoute exact path={path.CHAT} component={Chat} />
 			</Switch>
 		</div>

@@ -12,7 +12,7 @@ export default async (type: string, email: string, token: string): Promise<void>
       subject,
       html: `
         <h1>Please use the following link to ${subject.includes('Activation') ? 'activate' : 'reset'} your account</h1>
-        <p>${process.env.CLIENT_URL}/api/user/confirmAccount/${token}</p>
+        <p>${process.env.CLIENT_URL}/api/user/${subject.includes('Activation') ? 'confirm-account' : 'reset-password'}/${token}</p>
         <hr />
         <p>This email may containe sensetive information</p>
         <p>${process.env.CLIENT_URL}</p>

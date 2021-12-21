@@ -5,16 +5,19 @@ import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/
 import { LockOutlined } from '@mui/icons-material';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
-import { setCredentials } from '../../features/auth/authSlice';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import SchoolIcon from '@mui/icons-material/School';
+import BusinessIcon from '@mui/icons-material/Business';
 import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation } from '../../app/services/auth';
+import { setCredentials } from '../../features/auth/authSlice';
+import CustomizedSnackbars from '../../components/Snackbar';
 import useAuth from '../../hooks/useAuth';
 
 import Input from './Input';
 import path from '../../constants/path';
 
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
-
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
 
 const Auth = () => {
@@ -27,14 +30,19 @@ const Auth = () => {
 	const location = useLocation();
 	const history = useHistory();
 	const [newPassword, setNewPassword] = useState('');
-	const [isSignup, setIsSignup] = useState(!location.pathname.includes('login'));
-	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', });
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
+	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
-	const [showPassword, setShowPassword] = useState(false);
+	const [alertMessage, setAlertMessage] = useState('');
 	const [open, setOpen] = useState(false);
 	const [isResettingPassword, setIsResettPassword] = useState(location.pathname.includes('reset-password'));
 
 	const [isForgettingPassword, setisForgettingPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+
+	const handleUserType = (event: any, newUserType: any) => {
+		setForm((prevForm) => ({ ...prevForm, userType: newUserType }));
+	};
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -61,17 +69,23 @@ const Auth = () => {
 
 			dispatch(setCredentials(userData));
 
-			history.push('/');
+			history.push(path.BASE);
 		} catch (err: any) {
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
-			err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
-				errorMessages[param] = [...errorMessages[param], msg];
-			});
+			if (err.data.message || err.data.email) {
+				setOpen(true);
+				setAlertMessage(err?.data?.message || err?.data?.email);
+			} else {
+				err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
+					errorMessages[param] = [...errorMessages[param], ` ${msg}.`];
+				});
 
-			setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+				setErrorMessage((prevErrorMessage) => ({ ...prevErrorMessage, ...errorMessages }));
+			}
 		}
 	};
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
 		setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
 	};
@@ -85,7 +99,7 @@ const Auth = () => {
 	};
 
 	const changeAuthType = () => {
-		history.push(isSignup ? '/login' : '/register');
+		history.push(isSignup ? path.LOGIN : path.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 		setisForgettingPassword(false);
@@ -110,10 +124,18 @@ const Auth = () => {
 		setIsResettPassword(false);
 		console.log('pa cak sam dosao do tu');
 		history.push('/login');
+		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
+	};
+
+	const changeForgotPasswordType = () => {
+		// history.push(path.FORGOT_PASSWORD);
+		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
+		// setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 	};
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
+			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />
 			<CssBaseline />
 			<Grid
 				item
@@ -228,88 +250,96 @@ const Auth = () => {
 			}
 			{/* <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
-					sx={{
-						my: 8,
-						mx: 4,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-					}}>
+					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
 					<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
 						<LockOutlined />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
 						{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
 					</Typography>
-					<Box
-						component='form'
-						noValidate
-						onSubmit={handleSubmit}
-						onClick={handleClick}
-						sx={{ mt: 1, width: '65%' }}>
-						<Grid container spacing={2}>
-							{isSignup && (
-								<Input
-									name='name'
-									label='Full Name'
-									handleChange={handleChange}
-									errorMessage={errorMessage.name[0]}
-									autoFocus
-								/>
-							)}
-							<Input
-								name='email'
-								label='Email Address'
-								handleChange={handleChange}
-								errorMessage={errorMessage.email[0]}
-								type='email'
-							/>
-							<Input
-								name='password'
-								label='Password'
-								handleChange={handleChange}
-								errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]}
-								type={showPassword ? 'text' : 'password'}
-								handleShowPassword={() => setShowPassword(!showPassword)}
-							/>
-							{isSignup && (
-								<Input
-									name='confirmPassword'
-									label='Repeat Password'
-									handleChange={handleChange}
-									errorMessage={errorMessage.confirmPassword[0]}
-									type='password'
-								/>
-							)}
+					{/* {!isForgotPassword ? (
+					) : (
+						<Typography component='h1' variant='h5'>
+							Forgot password
+						</Typography>
+					)} */}
+			<Box
+				component='form'
+				noValidate
+				onSubmit={handleSubmit}
+				sx={{ mt: 1, width: '65%' }}>
+				{/* {!isForgotPassword ? ( */}
+				<Grid container spacing={2}>
+					{isSignup && (
+						<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
+							<Box display="flex" justifyContent="center">
+								<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
+									<ToggleButton value="student" aria-label="student">
+										Student <SchoolIcon sx={{ marginLeft: '10px' }} />
+									</ToggleButton>
+									<ToggleButton value="company" aria-label="company">
+										Company <BusinessIcon sx={{ marginLeft: '10px' }} />
+									</ToggleButton>
+								</ToggleButtonGroup>
+							</Box>
 						</Grid>
-						<Button
-							type='submit'
-							fullWidth
-							variant='contained'
-							sx={{ mt: 3, mb: 2 }}
-							onClick={handleResetPassword}>
-							{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
-						</Button>
-						<Grid container>
-							<Grid item xs>
-								{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
-									<Button
-										onClick={handleForgotPassword}>Forgot password?
-									</Button>
-								)}
+					)}
+					{isSignup && (
+						<Input
+							name='name'
+							label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
+							handleChange={handleChange}
+							errorMessage={errorMessage.name[0]}
+							autoFocus
+						/>
+					)}
+					<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+					<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+					{isSignup && (
+						<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
+					)}
+				</Grid>
+				{/* ) : (
+							<Grid container spacing={2}>
+								<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+							</Grid>
+						)} */}
+				<Button
+					type='submit'
+					fullWidth
+					variant='contained'
+					sx={{ mt: 3, mb: 2 }}
+					onClick={handleResetPassword}>
+					{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+				</Button>
+				{/* {!isForgotPassword ? (
+						) : (
+							<Button
+								type='submit'
+								fullWidth
+								variant='contained'
+								sx={{ mt: 3, mb: 2 }}>
+								Send the password reset
+							</Button>
+						)} */}
+				<Grid container>
+					<Grid item xs>
+						{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+							<Button
+								onClick={handleForgotPassword}>Forgot password?
+							</Button>
+						)}
 
-							</Grid>
-							<Grid item>
-								<Button onClick={changeAuthType}>
-									{isSignup
-										? 'Already have an account? Sign in'
-										: "Don't have an account? Sign Up"}
-								</Button>
-							</Grid>
-						</Grid>
-					</Box>
-				</Box>
-			</Grid> */}
+					</Grid>
+					<Grid item>
+						<Button onClick={changeAuthType}>
+							{isSignup
+								? 'Already have an account? Sign in'
+								: "Don't have an account? Sign Up"}
+						</Button>
+					</Grid>
+				</Grid>
+			</Box>
 		</Grid>
 	);
 };

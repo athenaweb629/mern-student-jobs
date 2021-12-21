@@ -20,10 +20,19 @@ export interface Payload {
 }
 
 export interface LoginRequest {
+	name: string;
 	email: string;
 	password: string;
 	confirmPassword?:string;
-	name: string;
+	userType?: string
+}
+
+interface Post {
+	title: string,
+	description: string,
+	level: string,
+	availability: string,
+	author: string
 }
 
 export interface ForgotPasswordRequest {
@@ -68,9 +77,30 @@ export const api = createApi({
 			}),
 		}),
 		protected: builder.mutation<{ message: string }, void>({
-			query: () => '/user/authorizedAction',
+			query: () => path.api.AUTHORIZED_ACTION,
+		}),
+		createPost: builder.mutation({
+			query: (body) => ({
+				url: path.api.POSTS,
+				method: 'POST',
+				body,
+			}),
+		}),
+		getPosts: builder.query<Post[], void>({
+			query: () => path.api.POSTS,
+			transformResponse: (rawResult: { posts: Post[] }) => rawResult.posts
+		}),
+		getPostById: builder.query<Post, string>({
+			query: (id) => `posts/${id}`,
 		}),
 	}),
 });
 
-export const { useLoginMutation, useProtectedMutation, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation } = api;
+export const {
+	useLoginMutation,
+	useProtectedMutation,
+	useRegisterMutation,
+	useCreatePostMutation,
+	useGetPostsQuery,
+	useGetPostByIdQuery,
+} = api;

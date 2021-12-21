@@ -1,20 +1,24 @@
 export default {
-
 	BASE: '/',
 	LOGIN: '/login',
 	REGISTER: '/register',
+	CHAT: '/chat',
 	FORGOT_PASSWORD: '/forgot-password',
 
 	api: {
 		LOGIN: '/user/login',
 		REGISTER: '/user/register',
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
+		AUTHORIZED_ACTION: '/user/authorizedAction',
 		RESEND_EMAIL: '/user/resendEmail',
-		RESET_PASSWORD: '/user/reset-password/:token',
+		RESET_PASSWORD: '/resetPassword/:token',
+		FORGOT_PASSWORD: '/forgotPassword',
+		POSTS: '/posts',
 	},
 
 	build: (path:string, ...params:Array<any>):string => {
 		params.reverse();
+
 		return path.replace(/(:\w+)/g, () => params.pop());
 	},
 };

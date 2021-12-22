@@ -66,7 +66,7 @@ export const api = createApi({
 			query: (data) => ({
 				url: `${path.api.RESET_PASSWORD}/${data.token}`,
 				method: 'PATCH',
-				body: data.password,
+				body: data,
 			}),
 		}),
 		forgotPassword: builder.mutation<Email, ForgotPasswordRequest>({

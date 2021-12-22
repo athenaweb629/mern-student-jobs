@@ -118,19 +118,7 @@ const Auth = () => {
 		setisForgettingPassword(true);
 	};
 
-	const handleResetPassword = () => {
-		const props: any = { password: newPassword, token };
-		resetPassword(props);
-		setIsResettPassword(false);
-		history.push('/login');
-		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
-	};
 
-	const changeForgotPasswordType = () => {
-		// history.push(path.FORGOT_PASSWORD);
-		// setIsForgotPassword((prevIsFrogotPassword: boolean) => !prevIsFrogotPassword);
-		// setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
-	};
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>

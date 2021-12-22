@@ -1,5 +1,5 @@
 import { useLocation, Switch, Route } from 'react-router-dom';
-import { Main, Auth, Chat } from './pages';
+import { Main, Auth, Chat, ResetPassword } from './pages';
 
 import path from './constants/path';
 import PrivateRoute from './utils/PrivateRoute';
@@ -17,6 +17,7 @@ const App = () => {
 			<Switch>
 				<PrivateRoute exact path={path.BASE} component={Main} />
 				<Route exact path={path.LOGIN} component={Auth} />
+				<Route exact path={path.RESET_PASSWORD} component={ResetPassword} />
 				<Route exact path={path.REGISTER} component={Auth} />
 				<Route exact path={path.FORGOT_PASSWORD} component={Auth} />
 				<PrivateRoute exact path={path.CHAT} component={Chat} />

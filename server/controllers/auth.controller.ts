@@ -44,9 +44,7 @@ export const loginController = async (req: Request, res: Response) => {
 };
 
 export const registerController = async (req: Request, res: Response) => {
-  const { name, email, password, role } = req.body;
-
-  // TODO: sada dobivas userType ovdje, iskoristi to da odredimo tip racuna.
+  const { name, email, password, userType } = req.body;
 
   const err = validationResult(req);
 
@@ -59,7 +57,9 @@ export const registerController = async (req: Request, res: Response) => {
       return res.status(400).json({ email: 'User with that e-mail already exists' });
     }
 
-    const newUser = new User({ email, name, password, role });
+    if (userType !== 'student' && userType !== 'company') { return res.status(500).json({ message: 'Invalid user type' }); }
+
+    const newUser = new User({ email, name, password, role: userType });
 
     bcrypt.genSalt(10, (error, salt) => {
       bcrypt.hash(password, salt, (_error, hash) => {

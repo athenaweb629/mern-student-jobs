@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
+  image: Buffer,
   email: {
     type: String,
     trim: true,
@@ -13,6 +14,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
+  about: {
+    type: String
+  },
+  industry: String,
   password: {
     type: String,
     required: true,
@@ -32,6 +37,32 @@ const userSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
+  tags: [{
+    type: String
+  }],
+  experience: [{
+    data: {
+      company: String,
+      startDate: Date,
+      endDate: Date || false,
+      description: String,
+      location: String,
+    }
+  }],
+  education: [{
+    data: {
+      school: String,
+      location: String,
+      degree: String,
+      startDate: Date,
+      endDate: Date,
+      grade: String,
+      description: String,
+    }
+  }],
+  licencesAndCertifications: [{
+    type: String
+  }],
 },
 { timestamps: true });
 

@@ -171,3 +171,43 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const doSomething = async (req: Request, res: Response) => {
   res.send({ message: 'Authenticated!' });
 };
+
+export const updateController = async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const decoded: any = jwt.decode(token);
+  const { email } = decoded;
+
+  const {
+    image,
+    name,
+    about,
+    industry,
+    tags,
+    experience,
+    education,
+    licencesAndCertifications,
+    websites,
+    skills,
+    projects
+  } = req.body;
+
+  // $push za dodavanje novih elemenata u arraye
+  try {
+    await User.updateOne({ email }, { $set: {
+      image,
+      name,
+      about,
+      industry,
+      tags,
+      experience,
+      education,
+      licencesAndCertifications,
+      websites,
+      skills,
+      projects
+    } });
+    return res.status(200).json({ message: 'Update successful' });
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+};

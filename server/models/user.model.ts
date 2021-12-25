@@ -41,27 +41,44 @@ const userSchema = new mongoose.Schema({
     type: String
   }],
   experience: [{
-    data: {
-      company: String,
-      startDate: Date,
-      endDate: Date || false,
-      description: String,
-      location: String,
-    }
+    isActive: Boolean,
+    employmentType: String,
+    industry: String,
+    company: String,
+    startDate: Date,
+    endDate: Date || false,
+    description: String,
+    location: String,
   }],
   education: [{
-    data: {
-      school: String,
-      location: String,
-      degree: String,
-      startDate: Date,
-      endDate: Date,
-      grade: String,
-      description: String,
-    }
+    school: String,
+    fieldOfStudy: String,
+    location: String,
+    degree: String,
+    startDate: Date,
+    endDate: Date,
+    grade: String,
+    description: String,
   }],
   licencesAndCertifications: [{
-    type: String
+    type: String,
+  }],
+  websites: [{
+    type: String,
+    url: String,
+  }],
+  skills: [{
+    type: String,
+    name: String,
+    passedSkillTest: Boolean,
+    isTopSkill: Boolean,
+  }],
+  projects: [{
+    title: String,
+    startDate: Date,
+    endDate: Date,
+    url: String,
+    description: String,
   }],
 },
 { timestamps: true });

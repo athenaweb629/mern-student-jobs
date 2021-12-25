@@ -25,7 +25,7 @@ app.get('/', (req: Request, res: Response) => res.status(200).json({ status: 'Ba
 
 //* Use Routes
 app.use('/api/user', userRouter);
-app.use('/api/posts', postRouter);
+app.use('/api/post', postRouter);
 
 //* 404 Route
 app.use((req: Request, res: Response) => res.status(404).json({ status: 'Page not found.' }));

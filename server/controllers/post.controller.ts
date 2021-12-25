@@ -10,7 +10,8 @@ export const getPosts = async (req: Request, res: Response) => {
 };
 
 export const createPost = (req: Request, res: Response) => {
-  const { title,
+  const {
+    title,
     description,
     qualificationLevel,
     availability,
@@ -20,7 +21,8 @@ export const createPost = (req: Request, res: Response) => {
   } = req.body;
 
   const postID = randomUUID();
-  const newPost = new Post({ postID,
+  const newPost = new Post({
+    postID,
     title,
     description,
     qualificationLevel,
@@ -30,15 +32,18 @@ export const createPost = (req: Request, res: Response) => {
     skills
   });
 
-  newPost.save();
-
-  res.status(200).json({ message: 'Post submitted' });
+  try {
+    newPost.save();
+    res.status(200).json({ message: 'Post submitted' });
+  } catch (e) {
+    res.status(500).json({ message: 'Post submission failed, please try again' });
+  }
 };
 
 export const deletePost = async (req: Request, res: Response) => {
-  const { id } = req.body;
+  const { postID } = req.body;
   try {
-    await Post.deleteOne({ id });
+    await Post.deleteOne({ postID });
     return res.json({ message: 'Post deleted' });
   } catch (e) {
     return res.status(500).json(e);
@@ -68,6 +73,6 @@ export const updatePost = async (req: Request, res: Response) => {
     });
     return res.json({ message: 'Post updated' });
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ message: 'Post submission failed, please try again' });
   }
 };

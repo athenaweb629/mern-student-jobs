@@ -12,7 +12,7 @@ const App = () => {
 
 	return (
 		<div>
-			{(location.pathname !== path.LOGIN && location.pathname !== path.REGISTER && location.pathname !== path.FORGOT_PASSWORD) && <Navbar />}
+			{(location.pathname !== path.LOGIN && location.pathname !== path.REGISTER && location.pathname !== path.FORGOT_PASSWORD && !location.pathname.startsWith(path.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
 
 			<Switch>
 				<PrivateRoute exact path={path.BASE} component={Main} />

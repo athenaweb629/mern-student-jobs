@@ -89,7 +89,7 @@ export const confirmUser = async (req: Request, res: Response) => {
   } catch (e) {
     return res.status(400).json(e);
   }
-0
+
   const decoded: any = jwtDecode(token);
   const { email } = decoded;
 

@@ -13,18 +13,27 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  level: {
+  employeeLocation: {
     type: String,
+    enum: ['On-site', 'Remote', 'Hybrid'],
+  },
+  qualificationLevel: {
+    type: String,
+    enum: ['Junior', 'Mid', 'Senior'],
     required: true,
   },
   availability: {
     type: String,
+    enum: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Volunteer', 'Internship'],
     required: true,
   },
   author: {
     type: String,
     required: true
-  }
+  },
+  skills: [{
+    type: String
+  }],
 },
 { timestamps: true });
 

@@ -146,6 +146,9 @@ export const resetPassword = async (req: Request, res: Response) => {
   let newPassword: any;
   let newSalt: any;
 
+  const decoded: any = jwt.decode(token);
+  const { email } = decoded;
+
   const err = validationResult(req);
   if (!err.isEmpty()) return res.status(400).json(err);
 
@@ -158,7 +161,8 @@ export const resetPassword = async (req: Request, res: Response) => {
         newPassword = hash;
         newSalt = salt;
 
-        await User.updateOne({ token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
+        const x = await User.updateOne({ resetPasswordToken: token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
+        console.log(x);
       });
     });
 

@@ -120,8 +120,6 @@ const Auth = () => {
 		setisForgettingPassword(true);
 	};
 
-
-
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
 			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />

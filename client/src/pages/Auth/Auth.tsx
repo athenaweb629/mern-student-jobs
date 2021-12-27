@@ -96,7 +96,9 @@ const Auth = () => {
 	};
 
 	const handleSubmitForgotPassword = () => {
-		forgotPassword({ email: form.email });
+		if (isForgettingPassword === true) {
+			forgotPassword({ email: form.email });
+		}
 	};
 
 	const changeAuthType = () => {

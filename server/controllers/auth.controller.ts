@@ -75,7 +75,7 @@ export const registerController = async (req: Request, res: Response) => {
 
     sendMail('activate', email, token);
 
-    return res.status(200).json({ message: 'Registration successful' });
+    return res.status(200).json({ message: 'Registration successful, please check your e-mail to confirm your account' });
   } catch (e) {
     return res.status(500).json(e);
   }
@@ -158,7 +158,7 @@ export const resetPassword = async (req: Request, res: Response) => {
         newPassword = hash;
         newSalt = salt;
 
-        await User.updateOne({ token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
+        await User.updateOne({ resetPasswordToken: token }, { $set: { password: newPassword, salt: newSalt, resetPasswordToken: '' } });
       });
     });
 

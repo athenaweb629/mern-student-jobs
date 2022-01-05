@@ -8,10 +8,10 @@ const router = express.Router();
 router.post('/login', validLogin, loginController);
 router.post('/register', validSignUp, registerController);
 router.get('/confirm-account/:token', confirmUser);
-router.get('/authorized-action', checkTokenExpiry, doSomething);
+router.get('/authorizedAction', checkTokenExpiry, doSomething);
+// router.get('/authorized-action', checkTokenExpiry, doSomething);
 
-router.get('/resendEmail', resendEmail);
-router.patch('/forgot-password', forgotPasswordValidator, forgotPassword);
-router.patch('/reset-password/:token', resetPasswordValidator, resetPassword);
+router.get('/resend-email', resendEmail);
+// router.get('/resendEmail', resendEmail);
 
 export default router;

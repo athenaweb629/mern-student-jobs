@@ -1,4 +1,4 @@
-import { Typography, CircularProgress, Button, CardActions, Card, CardContent, CardMedia, Box, Paper, Grid } from '@mui/material';
+import { Typography, CircularProgress, Button, CardActions, CardContent, CardMedia, Box, Paper } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import { useGetPostsQuery } from '../app/services/auth';

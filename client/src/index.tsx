@@ -1,17 +1,13 @@
 import ReactDOM from 'react-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import path from './constants/paths';
-import PrivateRoute from './utils/PrivateRoute';
 import { store } from './app/store';
-import { Auth, Chat } from './pages';
 import App from './App';
 import './index.css';
-import { Navbar } from './components';
 
 const theme = createTheme({
 	typography: {

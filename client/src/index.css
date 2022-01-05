@@ -7,3 +7,24 @@ html, #root, body {
   font-family: 'ProximaNovaSemibold';
   src: local('ProximaNovaSemibold'), url('./assets/fonts/font.otf') format('truetype');
 }
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+.ce-chat-engine {
+  width: 96%;
+  border-radius: 20px;
+}
+
+
+.ce-chat-list {
+  border-top-left-radius: 20px !important;
+  border-bottom-left-radius: 20px !important; 
+}
+
+.ce-settings {
+  border-top-right-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
+}

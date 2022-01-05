@@ -1,26 +1,24 @@
 import { useLocation, Switch, Route } from 'react-router-dom';
-import { Main, Auth, Chat, ResetPassword } from './pages';
 
-import path from './constants/paths';
+import { Main, Auth, Chat } from './pages';
 import PrivateRoute from './utils/PrivateRoute';
-
+import paths from './constants/paths';
 import { Navbar } from './components';
 
 const App = () => {
 	const location = useLocation();
-	console.log(location.pathname);
 
 	return (
 		<div>
-			{(location.pathname !== path.LOGIN && location.pathname !== path.REGISTER && location.pathname !== path.FORGOT_PASSWORD && !location.pathname.startsWith(path.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
+			{(location.pathname !== paths.LOGIN && location.pathname !== paths.REGISTER && location.pathname !== paths.FORGOT_PASSWORD && !location.pathname.startsWith(paths.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
 
 			<Switch>
-				<PrivateRoute exact path={path.BASE} component={Main} />
-				<Route exact path={path.LOGIN} component={Auth} />
-				<Route exact path={path.RESET_PASSWORD} component={ResetPassword} />
-				<Route exact path={path.REGISTER} component={Auth} />
-				<Route exact path={path.FORGOT_PASSWORD} component={Auth} />
-				<PrivateRoute exact path={path.CHAT} component={Chat} />
+				<PrivateRoute exact path={paths.BASE} component={Main} />
+				<Route exact path={paths.LOGIN} component={Auth} />
+				<Route exact path={paths.RESET_PASSWORD} component={Auth} />
+				<Route exact path={paths.REGISTER} component={Auth} />
+				<Route exact path={paths.FORGOT_PASSWORD} component={Auth} />
+				<PrivateRoute exact path={paths.CHAT} component={Chat} />
 			</Switch>
 		</div>
 	);

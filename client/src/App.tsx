@@ -1,9 +1,8 @@
 import { useLocation, Switch, Route } from 'react-router-dom';
-import { Main, Auth, Chat } from './pages';
+import { Main, Auth, Chat, ResetPassword } from './pages';
 
-import path from './constants/path';
+import path from './constants/paths';
 import PrivateRoute from './utils/PrivateRoute';
-import { store } from './app/store';
 
 import { Navbar } from './components';
 
@@ -13,12 +12,14 @@ const App = () => {
 
 	return (
 		<div>
-			{(location.pathname !== path.LOGIN && location.pathname !== path.REGISTER && location.pathname !== path.FORGOT_PASSWORD) && <Navbar />}
+			{(location.pathname !== path.LOGIN && location.pathname !== path.REGISTER && location.pathname !== path.FORGOT_PASSWORD && !location.pathname.startsWith(path.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
 
 			<Switch>
 				<PrivateRoute exact path={path.BASE} component={Main} />
 				<Route exact path={path.LOGIN} component={Auth} />
+				<Route exact path={path.RESET_PASSWORD} component={ResetPassword} />
 				<Route exact path={path.REGISTER} component={Auth} />
+				<Route exact path={path.FORGOT_PASSWORD} component={Auth} />
 				<PrivateRoute exact path={path.CHAT} component={Chat} />
 			</Switch>
 		</div>

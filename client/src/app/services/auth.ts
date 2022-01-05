@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import path from '../../constants/paths';
+import paths from '../../constants/paths';
 import { RootState } from '../store';
 
 export interface User {
@@ -57,37 +57,37 @@ export const api = createApi({
 	}),
 	endpoints: (builder) => ({
 		login: builder.mutation<User, LoginRequest>({
-			query: (credentials) => ({ url: path.api.LOGIN, method: 'POST', body: credentials, }),
+			query: (credentials) => ({ url: paths.api.LOGIN, method: 'POST', body: credentials, }),
 		}),
 		register: builder.mutation<User, LoginRequest>({
-			query: (body) => ({ url: path.api.REGISTER, method: 'POST', body }),
+			query: (body) => ({ url: paths.api.REGISTER, method: 'POST', body }),
 		}),
 		resetPassword: builder.mutation<Payload, ResetPasswordRequest>({
 			query: (data) => ({
-				url: `${path.api.RESET_PASSWORD}/${data.token}`,
+				url: `${paths.api.RESET_PASSWORD}/${data.token}`,
 				method: 'PATCH',
 				body: data,
 			}),
 		}),
 		forgotPassword: builder.mutation<Email, ForgotPasswordRequest>({
 			query: (email) => ({
-				url: path.api.FORGOT_PASSWORD,
+				url: paths.api.FORGOT_PASSWORD,
 				method: 'PATCH',
 				body: email,
 			}),
 		}),
 		protected: builder.mutation<{ message: string }, void>({
-			query: () => path.api.AUTHORIZED_ACTION,
+			query: () => paths.api.AUTHORIZED_ACTION,
 		}),
 		createPost: builder.mutation({
 			query: (body) => ({
-				url: path.api.POSTS,
+				url: paths.api.POSTS,
 				method: 'POST',
 				body,
 			}),
 		}),
 		getPosts: builder.query<Post[], void>({
-			query: () => path.api.POSTS,
+			query: () => paths.api.POSTS,
 			transformResponse: (rawResult: { posts: Post[] }) => rawResult.posts
 		}),
 		getPostById: builder.query<Post, string>({

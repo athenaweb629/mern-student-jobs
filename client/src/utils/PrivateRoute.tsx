@@ -1,5 +1,6 @@
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import path from '../constants/paths';
+
+import paths from '../constants/paths';
 import useAuth from '../hooks/useAuth';
 
 const PrivateRoute = (props: RouteProps) => {
@@ -7,7 +8,7 @@ const PrivateRoute = (props: RouteProps) => {
 
 	if (user) return <Route {...props} />;
 
-	return <Redirect to={path.LOGIN} />;
+	return <Redirect to={paths.LOGIN} />;
 };
 
 export default PrivateRoute;

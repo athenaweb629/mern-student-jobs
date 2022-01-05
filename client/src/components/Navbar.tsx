@@ -4,6 +4,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, MenuIte
 import { Search as SearchIcon, AccountCircle, Mail, Notifications, Menu as MenuIcon, Logout } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
+
 import { avatar } from '../assets/images';
 import { logout } from '../features/auth/authSlice';
 import useAuth from '../hooks/useAuth';

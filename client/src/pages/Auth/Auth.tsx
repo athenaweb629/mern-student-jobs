@@ -32,12 +32,12 @@ const Auth = () => {
 	const history = useHistory();
 	const [newPassword, setNewPassword] = useState('');
 	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
-	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: '' });
+	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: 'student' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
 	const [open, setOpen] = useState(false);
 	const [isResettingPassword, setIsResettPassword] = useState(location.pathname.includes('reset-password'));
-
+	const [snackbarType, setSnackbarType] = useState('error');
 	const [isForgettingPassword, setisForgettingPassword] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -76,6 +76,7 @@ const Auth = () => {
 
 			if (err.data.message || err.data.email) {
 				setOpen(true);
+				setSnackbarType('error');
 				setAlertMessage(err?.data?.message || err?.data?.email);
 			} else {
 				err?.data?.errors?.forEach(({ param, msg }: { param: Param, msg: string }) => {
@@ -96,6 +97,12 @@ const Auth = () => {
 	};
 
 	const handleSubmitForgotPassword = () => {
+		if (isForgettingPassword) {
+			setOpen(true);
+			setSnackbarType('success');
+			setAlertMessage('Password reset link has been sent to your e-mail');
+		}
+
 		if (isForgettingPassword === true) {
 			forgotPassword({ email: form.email });
 		}
@@ -116,13 +123,14 @@ const Auth = () => {
 
 	const handleForgotPassword = () => {
 		history.push('/forgot-password');
+
 		setIsSignup(false);
 		setisForgettingPassword(true);
 	};
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
-			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />
+			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} type={snackbarType} />
 			<CssBaseline />
 			<Grid
 				item

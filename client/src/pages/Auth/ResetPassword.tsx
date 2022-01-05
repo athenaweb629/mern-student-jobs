@@ -1,12 +1,9 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/no-this-in-sfc */
 import React, { useState, useEffect } from 'react';
 import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { useResetPasswordMutation } from '../../app/services/auth';
-import CustomizedSnackbars from '../../components/Snackbar';
 import useAuth from '../../hooks/useAuth';
 
 import Input from './Input';
@@ -17,13 +14,9 @@ export interface IErrorMessages { name: string[]; password: string[]; confirmPas
 const ResetPassword = () => {
 	const user = useAuth();
 	const currentToken:any = useParams();
-	console.log(currentToken.token);
 	const [resetPassword] = useResetPasswordMutation();
 	const history = useHistory();
 	const [newPassword, setNewPassword] = useState('');
-	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
-	const [alertMessage, setAlertMessage] = useState('');
-	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		if (user) history.push(path.BASE);
@@ -42,7 +35,6 @@ const ResetPassword = () => {
 
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
-			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} />
 			<CssBaseline />
 			<Grid
 				item
@@ -67,9 +59,7 @@ const ResetPassword = () => {
 						<LockOutlined />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-
 						Reset your password
-
 					</Typography>
 					<Box
 						component='form'
@@ -90,7 +80,6 @@ const ResetPassword = () => {
 					</Box>
 				</Box>
 			</Grid>
-
 		</Grid>
 	);
 };

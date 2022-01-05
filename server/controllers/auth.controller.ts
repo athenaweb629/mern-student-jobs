@@ -44,9 +44,7 @@ export const loginController = async (req: Request, res: Response) => {
 };
 
 export const registerController = async (req: Request, res: Response) => {
-  const { name, email, password, role } = req.body;
-
-  // TODO: sada dobivas userType ovdje, iskoristi to da odredimo tip racuna.
+  const { name, email, password, userType } = req.body;
 
   const err = validationResult(req);
 
@@ -59,7 +57,9 @@ export const registerController = async (req: Request, res: Response) => {
       return res.status(400).json({ email: 'User with that e-mail already exists' });
     }
 
-    const newUser = new User({ email, name, password, role });
+    if (userType !== 'student' && userType !== 'company') { return res.status(500).json({ message: 'Invalid user type' }); }
+
+    const newUser = new User({ email, name, password, role: userType });
 
     bcrypt.genSalt(10, (error, salt) => {
       bcrypt.hash(password, salt, (_error, hash) => {
@@ -75,7 +75,7 @@ export const registerController = async (req: Request, res: Response) => {
 
     sendMail('activate', email, token);
 
-    return res.status(200).json({ message: 'Registration successful' });
+    return res.status(200).json({ message: 'Registration successful, please check your e-mail to confirm your account' });
   } catch (e) {
     return res.status(500).json(e);
   }
@@ -170,4 +170,44 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const doSomething = async (req: Request, res: Response) => {
   res.send({ message: 'Authenticated!' });
+};
+
+export const updateController = async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const decoded: any = jwt.decode(token);
+  const { email } = decoded;
+
+  const {
+    image,
+    name,
+    about,
+    industry,
+    tags,
+    experience,
+    education,
+    licencesAndCertifications,
+    websites,
+    skills,
+    projects
+  } = req.body;
+
+  // $push za dodavanje novih elemenata u arraye
+  try {
+    await User.updateOne({ email }, { $set: {
+      image,
+      name,
+      about,
+      industry,
+      tags,
+      experience,
+      education,
+      licencesAndCertifications,
+      websites,
+      skills,
+      projects
+    } });
+    return res.status(200).json({ message: 'Update successful' });
+  } catch (e) {
+    return res.status(500).json(e);
+  }
 };

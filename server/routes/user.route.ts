@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginController, registerController, confirmUser, resendEmail, forgotPassword, resetPassword, doSomething } from '../controllers/auth.controller';
+import { loginController, registerController, confirmUser, resendEmail, forgotPassword, resetPassword, doSomething, updateController } from '../controllers/auth.controller';
 import { validLogin, validSignUp, forgotPasswordValidator, resetPasswordValidator } from '../helpers/valid';
 import checkTokenExpiry from '../middleware/checkTokenExpiry';
 
@@ -13,5 +13,9 @@ router.get('/authorizedAction', checkTokenExpiry, doSomething);
 
 router.get('/resend-email', resendEmail);
 // router.get('/resendEmail', resendEmail);
+router.patch('/forgot-password', forgotPasswordValidator, forgotPassword);
+router.patch('/reset-password/:token', resetPasswordValidator, resetPassword);
+
+router.patch('/update-user', checkTokenExpiry, updateController);
 
 export default router;

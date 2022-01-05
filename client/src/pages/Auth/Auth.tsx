@@ -76,6 +76,7 @@ const Auth = () => {
 				setAlertMessage('Account created. Please confirm it via e-mail and then log in.');
 				history.push(paths.LOGIN);
 			} else {
+				if (!form.email && !form.confirmPassword) return;
 				userData = await login(form).unwrap();
 				dispatch(setCredentials(userData));
 
@@ -133,11 +134,7 @@ const Auth = () => {
 					<Typography component='h1' variant='h5'>
 						{currentAuthState === 'forgot-password' || currentAuthState === 'reset-password' ? 'Reset your password' : (currentAuthState === 'register' ? 'Sign Up' : 'Sign In')}
 					</Typography>
-					<Box
-						component='form'
-						noValidate
-						onSubmit={handleSubmit}
-						sx={{ mt: 1, width: '65%' }}>
+					<Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 1, width: '65%' }}>
 						<Grid container spacing={2} sx={{ width: '100%' }}>
 							{currentAuthState === 'register' && (
 								<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
@@ -164,12 +161,7 @@ const Auth = () => {
 								</>
 							)}
 						</Grid>
-						<Button
-							type='submit'
-							fullWidth
-							variant='contained'
-							sx={{ mt: 3, mb: 2 }}
-							onClick={handleSubmitForgotPassword}>
+						<Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} onClick={handleSubmitForgotPassword}>
 							{currentAuthState === 'forgot-password' || currentAuthState === 'reset-password' ? 'Reset your password' : (currentAuthState === 'register' ? 'Sign Up' : 'Sign In')}
 						</Button>
 						<Grid container>

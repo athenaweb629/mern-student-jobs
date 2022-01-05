@@ -4,6 +4,7 @@ export default {
 	REGISTER: '/register',
 	CHAT: '/chat',
 	FORGOT_PASSWORD: '/forgot-password',
+	RESET_PASSWORD: '/reset-password/:token',
 
 	api: {
 		LOGIN: '/user/login',
@@ -11,8 +12,8 @@ export default {
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
 		AUTHORIZED_ACTION: '/user/authorizedAction',
 		RESEND_EMAIL: '/user/resendEmail',
-		RESET_PASSWORD: '/resetPassword/:token',
-		FORGOT_PASSWORD: '/forgotPassword',
+		RESET_PASSWORD: '/user/reset-password',
+		FORGOT_PASSWORD: '/user/forgot-password',
 		POSTS: '/posts',
 	},
 

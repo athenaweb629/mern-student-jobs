@@ -7,7 +7,7 @@ import { useResetPasswordMutation } from '../../app/services/auth';
 import useAuth from '../../hooks/useAuth';
 
 import Input from './Input';
-import path from '../../constants/path';
+import path from '../../constants/paths';
 
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
 

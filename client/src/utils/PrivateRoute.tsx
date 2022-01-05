@@ -1,5 +1,5 @@
 import { Redirect, Route, RouteProps } from 'react-router-dom';
-import path from '../constants/path';
+import path from '../constants/paths';
 import useAuth from '../hooks/useAuth';
 
 const PrivateRoute = (props: RouteProps) => {

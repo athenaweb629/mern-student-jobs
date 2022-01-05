@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import path from './constants/path';
+import path from './constants/paths';
 import PrivateRoute from './utils/PrivateRoute';
 import { store } from './app/store';
 import { Auth, Chat } from './pages';

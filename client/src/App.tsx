@@ -1,7 +1,7 @@
 import { useLocation, Switch, Route } from 'react-router-dom';
 import { Main, Auth, Chat, ResetPassword } from './pages';
 
-import path from './constants/path';
+import path from './constants/paths';
 import PrivateRoute from './utils/PrivateRoute';
 
 import { Navbar } from './components';

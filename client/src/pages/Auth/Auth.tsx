@@ -15,7 +15,7 @@ import CustomizedSnackbars from '../../components/Snackbar';
 import useAuth from '../../hooks/useAuth';
 
 import Input from './Input';
-import path from '../../constants/path';
+import paths from '../../constants/paths';
 
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
@@ -31,7 +31,7 @@ const Auth = () => {
 	const location = useLocation();
 	const history = useHistory();
 	const [newPassword, setNewPassword] = useState('');
-	const [isSignup, setIsSignup] = useState(!location.pathname.includes(path.LOGIN));
+	const [isSignup, setIsSignup] = useState(!location.pathname.includes(paths.LOGIN));
 	const [form, setForm] = useState<LoginRequest>({ email: '', password: '', name: '', confirmPassword: '', userType: 'student' });
 	const [errorMessage, setErrorMessage] = useState<IErrorMessages>({ name: [], email: [], password: [], confirmPassword: [], });
 	const [alertMessage, setAlertMessage] = useState('');
@@ -46,8 +46,16 @@ const Auth = () => {
 	};
 
 	useEffect(() => {
-		if (user) history.push(path.BASE);
+		if (user) history.push(paths.BASE);
 	}, []);
+
+	useEffect(() => {
+		if (location.pathname === paths.LOGIN) {
+			setIsSignup(false);
+		}
+	}, [location.pathname]);
+
+	console.log({ isSignup });
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -64,13 +72,17 @@ const Auth = () => {
 
 			if (isSignup) {
 				userData = await register(form).unwrap();
+
+				setOpen(true);
+				setSnackbarType('success');
+				setAlertMessage('Account created. Please confirm it via e-mail and then log in.');
+				history.push(paths.LOGIN);
 			} else {
 				userData = await login(form).unwrap();
+				dispatch(setCredentials(userData));
+
+				history.push(paths.BASE);
 			}
-
-			dispatch(setCredentials(userData));
-
-			history.push(path.BASE);
 		} catch (err: any) {
 			const errorMessages: IErrorMessages = { name: [], password: [], confirmPassword: [], email: [] };
 
@@ -103,13 +115,13 @@ const Auth = () => {
 			setAlertMessage('Password reset link has been sent to your e-mail');
 		}
 
-		if (isForgettingPassword === true) {
+		if (isForgettingPassword) {
 			forgotPassword({ email: form.email });
 		}
 	};
 
 	const changeAuthType = () => {
-		history.push(isSignup ? path.LOGIN : path.REGISTER);
+		history.push(isSignup ? paths.LOGIN : paths.REGISTER);
 
 		setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
 		setisForgettingPassword(false);
@@ -184,83 +196,82 @@ const Auth = () => {
 						</Box>
 					</Box>
 				</Grid>
-			)
-				:												(
-					<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+			)	: (
+				<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+					<Box
+						sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+						<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+							<LockOutlined />
+						</Avatar>
+						<Typography component='h1' variant='h5'>
+							{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
+						</Typography>
 						<Box
-							sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-							<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-								<LockOutlined />
-							</Avatar>
-							<Typography component='h1' variant='h5'>
+							component='form'
+							noValidate
+							onSubmit={handleSubmit}
+							sx={{ mt: 1, width: '65%' }}>
+							<Grid container spacing={2} sx={{ width: '100%' }}>
+								{isSignup && (
+									<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
+										<Box display="flex" justifyContent="center">
+											<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
+												<ToggleButton value="student" aria-label="student">
+													Student <SchoolIcon sx={{ marginLeft: '10px' }} />
+												</ToggleButton>
+												<ToggleButton value="company" aria-label="company">
+													Company <BusinessIcon sx={{ marginLeft: '10px' }} />
+												</ToggleButton>
+											</ToggleButtonGroup>
+										</Box>
+									</Grid>
+								)}
+								{isSignup && (
+									<Input
+										name='name'
+										label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
+										handleChange={handleChange}
+										errorMessage={errorMessage.name[0]}
+										autoFocus
+									/>
+								)}
+								<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
+								{!isForgettingPassword && (<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
+								)}
+								{isSignup && (
+									<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
+								)}
+
+							</Grid>
+
+							<Button
+								type='submit'
+								fullWidth
+								variant='contained'
+								sx={{ mt: 3, mb: 2 }}
+								onClick={handleSubmitForgotPassword}>
 								{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
-							</Typography>
-							<Box
-								component='form'
-								noValidate
-								onSubmit={handleSubmit}
-								sx={{ mt: 1, width: '65%' }}>
-								<Grid container spacing={2}>
-									{isSignup && (
-										<Grid item xs={12} sm={12} sx={{ marginTop: '5px' }}>
-											<Box display="flex" justifyContent="center">
-												<ToggleButtonGroup value={form.userType} exclusive onChange={handleUserType} color="primary" aria-label="user type">
-													<ToggleButton value="student" aria-label="student">
-														Student <SchoolIcon sx={{ marginLeft: '10px' }} />
-													</ToggleButton>
-													<ToggleButton value="company" aria-label="company">
-														Company <BusinessIcon sx={{ marginLeft: '10px' }} />
-													</ToggleButton>
-												</ToggleButtonGroup>
-											</Box>
-										</Grid>
-									)}
-									{isSignup && (
-										<Input
-											name='name'
-											label={form.userType === 'company' ? 'Company Name' : 'Full Name'}
-											handleChange={handleChange}
-											errorMessage={errorMessage.name[0]}
-											autoFocus
-										/>
-									)}
-									<Input name='email' label='Email Address' handleChange={handleChange} errorMessage={errorMessage.email[0]} type='email' />
-									{!isForgettingPassword && (<Input name='password' label='Password' handleChange={handleChange} errorMessage={typeof errorMessage.password === 'string' ? errorMessage.password : errorMessage.password[0]} type={showPassword ? 'text' : 'password'} handleShowPassword={() => setShowPassword(!showPassword)} />
-									)}
-									{isSignup && (
-										<Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} errorMessage={errorMessage.confirmPassword[0]} type='password' />
-									)}
-
-								</Grid>
-
-								<Button
-									type='submit'
-									fullWidth
-									variant='contained'
-									sx={{ mt: 3, mb: 2 }}
-									onClick={handleSubmitForgotPassword}>
-									{isForgettingPassword ? 'Reset your password' : (isSignup ? 'Sign Up' : 'Sign In')}
-								</Button>
-								<Grid container>
-									<Grid item xs>
-										{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
-											<Button
-												onClick={handleForgotPassword}>Forgot password?
-											</Button>
-										)}
-									</Grid>
-									<Grid item>
-										<Button onClick={changeAuthType}>
-											{isSignup
-												? 'Already have an account? Sign in'
-												: "Don't have an account? Sign Up"}
+							</Button>
+							<Grid container>
+								<Grid item xs>
+									{isForgettingPassword ? <Button onClick={handleSignIn}>Sign in</Button> : (
+										<Button
+											onClick={handleForgotPassword}>Forgot password?
 										</Button>
-									</Grid>
+									)}
 								</Grid>
-							</Box>
+								<Grid item>
+									<Button onClick={changeAuthType}>
+										{isSignup
+											? 'Already have an account? Sign in'
+											: "Don't have an account? Sign Up"}
+									</Button>
+								</Grid>
+							</Grid>
 						</Box>
-					</Grid>
-				)
+					</Box>
+				</Grid>
+			)
 			}
 
 		</Grid>

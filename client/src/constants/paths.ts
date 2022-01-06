@@ -11,7 +11,7 @@ export default {
 		REGISTER: '/user/register',
 		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
 		AUTHORIZED_ACTION: '/user/authorizedAction',
-		RESEND_EMAIL: '/user/resendEmail',
+		RESEND_EMAIL: '/user/resend-email',
 		RESET_PASSWORD: '/user/reset-password',
 		FORGOT_PASSWORD: '/user/forgot-password',
 		POSTS: '/posts',

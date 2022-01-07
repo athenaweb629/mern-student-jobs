@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Box, TextField, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputLabel, Select, MenuItem, AccordionDetails, SelectChangeEvent, FormControl } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { useCreatePostMutation } from '../app/services/auth';
@@ -7,7 +7,7 @@ import useAuth from '../hooks/useAuth';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '', description: '', level: '', availability: '', author: user?.email });
+	const [form, setForm] = useState({ title: '', description: '', level: ['Junior', 'Mid', 'Senior'], availability: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Volunteer', 'Internship'], skills: '', employeeLocation: ['On-site', 'Remote', 'Hybrid'], author: user?.email });
 	const [createPost] = useCreatePostMutation();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -18,12 +18,13 @@ const CreatePost = () => {
 
 			console.log(response);
 		} catch (error:any) {
-			alert(error.data.name);
+			console.log(error);
 		}
 	};
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+	const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<string>): void => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		console.log(event.target.value, event.target.name);
 	};
 
 	return (
@@ -36,8 +37,62 @@ const CreatePost = () => {
 					<Box onSubmit={handleSubmit} component="form" sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }} noValidate autoComplete="off">
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
 						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
-						<TextField label="Level" variant="standard" name="level" value={form.level} onChange={handleChange} />
-						<TextField label="Availability" variant="standard" name="availability" value={form.availability} onChange={handleChange} />
+						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
+						<FormControl>
+							<InputLabel id="availability">Availability</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								// value={form.availability}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								name='availability'
+							>
+								{
+									form.availability.map((item) => (
+										<MenuItem value={item} key={item}>{item}</MenuItem>
+									))
+								}
+							</Select>
+						</FormControl>
+						<FormControl>
+							<InputLabel id="demo-simple-select-disabled-label">Employee Location</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								// value={form.employeeLocation}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								name='employeeLocation'
+							>
+								{
+									form.employeeLocation.map((loc) => (
+										<MenuItem value={loc} key={loc}>{loc}</MenuItem>
+									))
+								}
+							</Select>
+						</FormControl>
+						<FormControl>
+							<InputLabel id="qualification-level">Level</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								// value={form.level}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								// name='level'
+							>
+								{
+									form.level.map((item) => (
+										<MenuItem value={item} key={item}>{item}</MenuItem>
+									))
+								}
+							</Select>
+						</FormControl>
+
 						<Button variant="contained" type="submit">Create Job Offer</Button>
 					</Box>
 				</AccordionDetails>

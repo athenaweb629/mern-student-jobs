@@ -7,7 +7,7 @@ import useAuth from '../hooks/useAuth';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '', description: '', level: ['Junior', 'Mid', 'Senior'], availability: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Volunteer', 'Internship'], skills: '', employeeLocation: ['On-site', 'Remote', 'Hybrid'], author: user?.email });
+	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
 	const [createPost] = useCreatePostMutation();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,17 +43,19 @@ const CreatePost = () => {
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
-								// value={form.availability}
+								value={form.availability}
 								label="Employee Location"
 								onChange={handleChange}
 								variant='standard'
 								name='availability'
 							>
-								{
-									form.availability.map((item) => (
-										<MenuItem value={item} key={item}>{item}</MenuItem>
-									))
-								}
+								<MenuItem value='Full-time'>Full-time</MenuItem>
+								<MenuItem value='Part-time'>Part-time</MenuItem>
+								<MenuItem value='Contract'>Contract</MenuItem>
+								<MenuItem value='Internship'>Intership</MenuItem>
+								<MenuItem value='Volunteer'>Volunteer</MenuItem>
+								<MenuItem value='Temporary'>Temporary</MenuItem>
+
 							</Select>
 						</FormControl>
 						<FormControl>
@@ -61,17 +63,15 @@ const CreatePost = () => {
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
-								// value={form.employeeLocation}
+								value={form.employeeLocation}
 								label="Employee Location"
 								onChange={handleChange}
 								variant='standard'
 								name='employeeLocation'
 							>
-								{
-									form.employeeLocation.map((loc) => (
-										<MenuItem value={loc} key={loc}>{loc}</MenuItem>
-									))
-								}
+								<MenuItem value='On-site'>On-site</MenuItem>
+								<MenuItem value='Remote'>Remote</MenuItem>
+								<MenuItem value='Hybrid'>Hybrid</MenuItem>
 							</Select>
 						</FormControl>
 						<FormControl>
@@ -79,17 +79,15 @@ const CreatePost = () => {
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
-								// value={form.level}
+								value={form.qualificationLevel}
 								label="Employee Location"
 								onChange={handleChange}
 								variant='standard'
-								// name='level'
+								name='qualificationLevel'
 							>
-								{
-									form.level.map((item) => (
-										<MenuItem value={item} key={item}>{item}</MenuItem>
-									))
-								}
+								<MenuItem value='Junior'>Junior</MenuItem>
+								<MenuItem value='Mid'>Mid</MenuItem>
+								<MenuItem value='Senior'>Senior</MenuItem>
 							</Select>
 						</FormControl>
 

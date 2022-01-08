@@ -32,7 +32,7 @@ const Main = () => {
 	if (isLoading) return <CircularProgress />;
 
 	const initiateChat = (author: any) => {
-		history.push(`/chat?userOneName=${user?.name}&userOneId=${user?.token}&userTwoName=${author}&userTwoId=78947393789`);
+		history.push(`/chat?userOneName=${user?.email}&userOneId=${user?.token}&userTwoName=${author}&userTwoId=78947393789`);
 	};
 	console.log(user);
 	return (
@@ -66,9 +66,7 @@ const Main = () => {
 										Apply
 									</Button>
 								</CardActions>
-							)
-						}
-
+							)}
 					</Item>
 					<br />
 				</>

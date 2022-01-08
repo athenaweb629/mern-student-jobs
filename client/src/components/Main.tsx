@@ -1,9 +1,11 @@
 import { Typography, CircularProgress, Button, CardActions, CardContent, CardMedia, Box, Paper } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
+import { useHistory } from 'react-router-dom';
 import { useGetPostsQuery } from '../app/services/auth';
 
 import { companyLogo } from '../assets/images';
+import useAuth from '../hooks/useAuth';
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -25,9 +27,14 @@ const images = [
 
 const Main = () => {
 	const { data: posts, isLoading } = useGetPostsQuery();
-
+	const history = useHistory();
+	const user = useAuth();
 	if (isLoading) return <CircularProgress />;
 
+	const initiateChat = (author: any) => {
+		history.push(`/chat?userOneName=${user?.name}&userOneId=${user?.token}&userTwoName=${author}&userTwoId=78947393789`);
+	};
+	console.log(user);
 	return (
 		<>
 			{posts?.map((post: any, i: number) => (
@@ -52,11 +59,16 @@ const Main = () => {
 							<Typography variant="body1" color="text.secondary">{post.description}</Typography>
 						</CardContent>
 						<CardMedia component="img" height="400" image={images[i]} alt="green iguana" />
-						<CardActions>
-							<Button size="small" color="primary">
-								Apply
-							</Button>
-						</CardActions>
+						{
+							user?.email !== post.author && (
+								<CardActions>
+									<Button size="small" color="primary" onClick={() => initiateChat(post.author)}>
+										Apply
+									</Button>
+								</CardActions>
+							)
+						}
+
 					</Item>
 					<br />
 				</>

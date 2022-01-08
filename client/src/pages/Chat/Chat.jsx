@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatEngine } from 'react-chat-engine';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
@@ -10,7 +10,7 @@ const privateKey = '2204c45b-bcde-4bd1-bc65-f4ed65f53052';
 const Chat = () => {
 	const { search } = useLocation();
 	let { userOneName, userOneId, userTwoName, userTwoId } = queryString.parse(search);
-
+	const [chatId, setChatId] = useState(null);
 	console.log(userOneName, userOneId, userTwoName, userTwoId);
 
 	if (!userOneName) {
@@ -33,7 +33,6 @@ const Chat = () => {
 	const getOrCreateChat = async () => {
 		axios.put('https://api.chatengine.io/chats/', {
 			usernames: [userOneName, userTwoName],
-			title: 'Job Offer',
 			is_direct_chat: true
 		}, {
 			headers: {
@@ -42,8 +41,20 @@ const Chat = () => {
 				'User-Secret': 123123,
 			}
 		});
+		// .then((data) => {
+		// 	console.log(data);
+		// 	setChatId(data.data.id);
+		// });
 	};
 
+	const getUsers = async () => {
+		axios.get('https://api.chatengine.io/users/', {
+			headers: {
+				'PRIVATE-KEY': privateKey
+			}
+		});
+	};
+	getUsers().then((data) => console.log(data));
 	useEffect(() => {
 		getOrCreateChatUser(userOneName)
 			.then((data) => {
@@ -59,20 +70,23 @@ const Chat = () => {
 			.then((data) => {
 				console.log(data);
 			});
+		getUsers().then((data) => console.log(data));
 	}, []);
 
 	// const getMyChats = async () => {
-	// 	axios.post('https://api.chatengine.io/chats/', {
-	// 		title: 'Surprise Party',
-	// 		is_direct_chat: false
-	// 	}, {
-	// 		headers: {
-	// 			'Project-ID': 'project_id',
-	// 			'User-Name': 'user_name',
-	// 			'User-Secret': 'user_secret',
-	// 		}
-	// 	});
+	// 	if (chatId) {
+	// 		axios.get(`https://api.chatengine.io/chats/${chatId}/messages/latest/45/`, {
+	// 		}, {
+	// 			headers: {
+	// 				'Project-ID': projectId,
+	// 				'User-Name': userOneName,
+	// 				'User-Secret': 123123,
+	// 			}
+	// 		}).then((data) => console.log(data));
+	// 	}
 	// };
+
+	// getMyChats();
 
 	// maybe
 	// POSTAdd Chat Member

@@ -9,6 +9,7 @@ const CreatePost = () => {
 	const user = useAuth();
 	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
 	const [createPost] = useCreatePostMutation();
+	console.log(user);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();

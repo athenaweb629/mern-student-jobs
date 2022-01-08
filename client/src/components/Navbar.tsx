@@ -120,7 +120,7 @@ const Navbar = () => {
 						<Typography variant="h6" noWrap component="div" color="text.primary" sx={{ display: { xs: 'none', sm: 'block' } }}>
 							{user?.name}
 						</Typography>
-						<DoSomething />
+						{/* <DoSomething /> */}
 					</Box>
 					<Search>
 						<SearchWrapper>

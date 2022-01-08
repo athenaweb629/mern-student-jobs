@@ -2,10 +2,24 @@ import { useEffect, useState } from 'react';
 import { ChatEngine } from 'react-chat-engine';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
+import { Box, Paper, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import axios from 'axios';
+
+import { Sidebar } from '../../components';
 
 const projectId = 'ccd21d32-1026-457e-be7d-c6bf3e84b5ca';
 const privateKey = '2204c45b-bcde-4bd1-bc65-f4ed65f53052';
+
+const Item = styled(Paper)(({ theme }) => ({
+	...theme.typography.body2,
+	padding: theme.spacing(1),
+	textAlign: 'center',
+	color: theme.palette.text.secondary,
+	background: '#FFFFFF',
+	boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.05)',
+	borderRadius: '20px',
+}));
 
 const Chat = () => {
 	const { search } = useLocation();
@@ -95,16 +109,25 @@ const Chat = () => {
 	if (!userOneName) return null;
 
 	return (
-		<div style={{ display: 'flex', justifyContent: 'center', fontFamily: 'ProximaNovaSemibold' }}>
-			<ChatEngine
-				height='80vh'
-				userName={userOneName}
-				userSecret='123123'
-				projectID={projectId}
-				renderNewChatForm={() => null}
-				// renderNewChatForm={(credentials) => renderChatForm(credentials)}
-			/>
-		</div>
+		<Box sx={{ flexGrow: 1, m: '30px' }}>
+			<Grid container spacing={3}>
+				<Grid item xs={12} sm={5} md={4} lg={3}>
+					<Item><Sidebar /></Item>
+				</Grid>
+				<Grid item xs={12} sm={7} md={8} lg={9}>
+					<div style={{ display: 'flex', justifyContent: 'center', fontFamily: 'ProximaNovaSemibold' }}>
+						<ChatEngine
+							height='80vh'
+							userName={userOneName}
+							userSecret='123123'
+							projectID={projectId}
+							renderNewChatForm={() => null}
+							// renderNewChatForm={(credentials) => renderChatForm(credentials)}
+						/>
+					</div>
+				</Grid>
+			</Grid>
+		</Box>
 	);
 };
 

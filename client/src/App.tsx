@@ -13,11 +13,11 @@ const App = () => {
 			{(location.pathname !== paths.LOGIN && location.pathname !== paths.REGISTER && location.pathname !== paths.FORGOT_PASSWORD && !location.pathname.startsWith(paths.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
 
 			<Switch>
-				<PrivateRoute exact path={paths.BASE} component={Main} />
 				<Route exact path={paths.LOGIN} component={Auth} />
 				<Route exact path={paths.RESET_PASSWORD} component={Auth} />
 				<Route exact path={paths.REGISTER} component={Auth} />
 				<Route exact path={paths.FORGOT_PASSWORD} component={Auth} />
+				<PrivateRoute exact path={paths.BASE} component={Main} />
 				<PrivateRoute exact path={paths.CHAT} component={Chat} />
 			</Switch>
 		</div>

@@ -22,7 +22,7 @@ const JobOffer = ({ post }: any) => {
 	const user = useAuth();
 
 	const initiateChat = (author: any) => {
-		history.push(`/chat?userOneName=${user?.email}&userOneId=${user?.token}&userTwoName=${author}&userTwoId=78947393789`);
+		history.push(`/chat?userOneName=${user?.email}&userTwoName=${author}`);
 	};
 
 	console.log(post);

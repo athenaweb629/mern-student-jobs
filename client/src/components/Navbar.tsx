@@ -8,7 +8,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { avatar } from '../assets/images';
 import { logout } from '../features/auth/authSlice';
 import useAuth from '../hooks/useAuth';
-import DoSomething from './DoSomething';
+// import DoSomething from './DoSomething';
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',

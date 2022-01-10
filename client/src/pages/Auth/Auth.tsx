@@ -120,11 +120,12 @@ const Auth = () => {
 		}
 	};
 
+	// https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1674&q=80
 	return (
 		<Grid container component='main' sx={{ height: '100vh' }}>
 			<CustomizedSnackbars open={open} setOpen={setOpen} alertMessage={alertMessage} type={snackbarType} />
 			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} sx={{ backgroundImage: 'url(https://source.unsplash.com/random)', backgroundRepeat: 'no-repeat', backgroundColor: (t) => t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900], backgroundSize: 'cover', backgroundPosition: 'center' }} />
+			<Grid item xs={false} sm={4} md={7} sx={{ backgroundImage: 'url(https://images.unsplash.com/photo-1581472723648-909f4851d4ae?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80)', backgroundRepeat: 'no-repeat', backgroundColor: (t) => t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900], backgroundSize: 'cover', backgroundPosition: 'center' }} />
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<Box
 					sx={{ my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

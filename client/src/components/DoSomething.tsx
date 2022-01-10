@@ -6,7 +6,7 @@ const DoSomething = () => {
 	const history = useHistory();
 
 	const initiateChat = () => {
-		history.push('/chat?userOneName=adrianhajdin&userOneId=1234&userTwoName=Iolap&userTwoId=5678');
+		history.push('/chat?userOneName=adrianhajdin&userOneId=1234&userTwoName=mandeep&userTwoId=09876');
 	};
 
 	return (

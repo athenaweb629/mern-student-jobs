@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Typography, Box, TextField, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputLabel, Select, MenuItem, AccordionDetails, SelectChangeEvent, FormControl } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { logout } from '../features/auth/authSlice';
 
 import { useCreatePostMutation } from '../app/services/auth';
 import useAuth from '../hooks/useAuth';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '', description: '', level: '', availability: '', author: user?.email });
+	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
 	const [createPost] = useCreatePostMutation();
+	const history = useHistory();
+	const dispatch = useDispatch();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -18,12 +23,19 @@ const CreatePost = () => {
 
 			console.log(response);
 		} catch (error:any) {
-			alert(error.data.name);
+			console.log(error);
+
+			if (error.name === 'TokenExpiredError') {
+				dispatch(logout());
+
+				history.push('/login');
+			}
 		}
 	};
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+	const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<string>): void => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		console.log(event.target.value, event.target.name);
 	};
 
 	return (
@@ -36,8 +48,60 @@ const CreatePost = () => {
 					<Box onSubmit={handleSubmit} component="form" sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }} noValidate autoComplete="off">
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
 						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
-						<TextField label="Level" variant="standard" name="level" value={form.level} onChange={handleChange} />
-						<TextField label="Availability" variant="standard" name="availability" value={form.availability} onChange={handleChange} />
+						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
+						<FormControl>
+							<InputLabel id="availability">Availability</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								value={form.availability}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								name='availability'
+							>
+								<MenuItem value='Full-time'>Full-time</MenuItem>
+								<MenuItem value='Part-time'>Part-time</MenuItem>
+								<MenuItem value='Contract'>Contract</MenuItem>
+								<MenuItem value='Internship'>Intership</MenuItem>
+								<MenuItem value='Volunteer'>Volunteer</MenuItem>
+								<MenuItem value='Temporary'>Temporary</MenuItem>
+
+							</Select>
+						</FormControl>
+						<FormControl>
+							<InputLabel id="demo-simple-select-disabled-label">Employee Location</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								value={form.employeeLocation}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								name='employeeLocation'
+							>
+								<MenuItem value='On-site'>On-site</MenuItem>
+								<MenuItem value='Remote'>Remote</MenuItem>
+								<MenuItem value='Hybrid'>Hybrid</MenuItem>
+							</Select>
+						</FormControl>
+						<FormControl>
+							<InputLabel id="qualification-level">Level</InputLabel>
+							<Select
+								labelId="employee-Location"
+								id="employeeLocation"
+								value={form.qualificationLevel}
+								label="Employee Location"
+								onChange={handleChange}
+								variant='standard'
+								name='qualificationLevel'
+							>
+								<MenuItem value='Junior'>Junior</MenuItem>
+								<MenuItem value='Mid'>Mid</MenuItem>
+								<MenuItem value='Senior'>Senior</MenuItem>
+							</Select>
+						</FormControl>
+
 						<Button variant="contained" type="submit">Create Job Offer</Button>
 					</Box>
 				</AccordionDetails>

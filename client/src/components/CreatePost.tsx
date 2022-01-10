@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputLabel, Select, MenuItem, AccordionDetails, SelectChangeEvent, FormControl } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { logout } from '../features/auth/authSlice';
 
 import { useCreatePostMutation } from '../app/services/auth';
 import useAuth from '../hooks/useAuth';
@@ -9,7 +12,8 @@ const CreatePost = () => {
 	const user = useAuth();
 	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
 	const [createPost] = useCreatePostMutation();
-	console.log(user);
+	const history = useHistory();
+	const dispatch = useDispatch();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -20,6 +24,12 @@ const CreatePost = () => {
 			console.log(response);
 		} catch (error:any) {
 			console.log(error);
+
+			if (error.name === 'TokenExpiredError') {
+				dispatch(logout());
+
+				history.push('/login');
+			}
 		}
 	};
 

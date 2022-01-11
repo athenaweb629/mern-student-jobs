@@ -3,8 +3,8 @@ import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputL
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { logout } from '../features/auth/authSlice';
 
+import { logout } from '../features/auth/authSlice';
 import { useCreatePostMutation } from '../app/services/auth';
 import useAuth from '../hooks/useAuth';
 
@@ -49,8 +49,9 @@ const CreatePost = () => {
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
 						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
 						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
+
 						<FormControl>
-							<InputLabel id="availability">Availability</InputLabel>
+							<InputLabel id="availability" sx={{ marginLeft: '-12px' }}>Availability</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
@@ -70,7 +71,7 @@ const CreatePost = () => {
 							</Select>
 						</FormControl>
 						<FormControl>
-							<InputLabel id="demo-simple-select-disabled-label">Employee Location</InputLabel>
+							<InputLabel id="demo-simple-select-disabled-label" sx={{ marginLeft: '-12px' }}>Employee Location</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
@@ -86,7 +87,7 @@ const CreatePost = () => {
 							</Select>
 						</FormControl>
 						<FormControl>
-							<InputLabel id="qualification-level">Level</InputLabel>
+							<InputLabel id="qualification-level" sx={{ marginLeft: '-12px' }}>Level</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"

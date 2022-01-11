@@ -9,10 +9,12 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
+  description: [
+    {
+      type: Object,
+      required: true
+    }
+  ],
   employeeLocation: {
     type: String,
     enum: ['On-site', 'Remote', 'Hybrid'],

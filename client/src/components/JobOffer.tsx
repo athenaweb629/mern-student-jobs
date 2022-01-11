@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import { companyLogo } from '../assets/images';
 import useAuth from '../hooks/useAuth';
+import ReadOnly from './Editor/ReadOnly';
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -46,7 +47,11 @@ const JobOffer = ({ post }: any) => {
 				</Box>
 				<CardContent sx={{ textAlign: 'start', padding: 0, margin: '10px 0' }}>
 					<Typography gutterBottom variant="h5" sx={{ color: 'text.primary', }}>{post.title}</Typography>
-					<Typography variant="body1" color="text.secondary">{post.description}</Typography>
+					{/* <Typography variant="body1" color="text.secondary">{post.description}</Typography> */}
+					<Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+						<ReadOnly description={post.description} />
+
+					</Box>
 				</CardContent>
 				{/* <CardMedia component="img" height="400" image={images[i]} alt="green iguana" /> */}
 				{user?.email !== post.author && (

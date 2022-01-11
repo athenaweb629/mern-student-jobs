@@ -9,10 +9,13 @@ html, #root, body {
 }
 
 ::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
+  width: 3px; /* Remove scrollbar space */
+  background: #fff;
+   /* Optional: just make scrollbar invisible */
 }
-
+::-webkit-scrollbar-thumb {
+  background: #F5F5F5;
+}
 .ce-chat-engine {
   width: 96%;
   border-radius: 20px;

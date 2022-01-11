@@ -7,11 +7,29 @@ import { useHistory } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import { useCreatePostMutation } from '../app/services/auth';
 import useAuth from '../hooks/useAuth';
+import RichEditor from './Editor/RichEditor';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
+	const [form, setForm] = useState({ title: '',
+		description: [{
+			type: 'paragraph',
+			children: [
+		  { text: 'Write your job description!' },
+			]
+	  }],
+		qualificationLevel: '',
+		availability: '',
+		skills: '',
+		employeeLocation: '',
+		author: user?.email });
 	const [createPost] = useCreatePostMutation();
+	const [input, setInput] = useState([{
+		type: 'paragraph',
+		children: [
+		  { text: 'Write your job description!' },
+		]
+	  }, ]);
 	const history = useHistory();
 	const dispatch = useDispatch();
 
@@ -37,7 +55,7 @@ const CreatePost = () => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 		console.log(event.target.value, event.target.name);
 	};
-
+	console.log(form);
 	return (
 		<>
 			<Accordion sx={{ borderRadius: '20px !important', outline: 'none', boxShadow: '0px 0px 10px rgb(0 0 0 / 5%) ', }}>
@@ -47,7 +65,8 @@ const CreatePost = () => {
 				<AccordionDetails>
 					<Box onSubmit={handleSubmit} component="form" sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }} noValidate autoComplete="off">
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
-						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
+						{/* <TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} /> */}
+						<RichEditor form={form} setForm={setForm} />
 						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
 
 						<FormControl>

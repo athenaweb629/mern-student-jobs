@@ -24,7 +24,7 @@ const HOTKEYS = {
 	'mod+`': 'code'
 };
 
-const RichEditor = ({ form, setForm }: any) => {
+const RichEditor = ({ form, setForm }) => {
 	const renderElement = useCallback((props) => <Element {...props} />, []);
 	const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 	const editor = useMemo(() => withHistory(withReact(createEditor())), []);

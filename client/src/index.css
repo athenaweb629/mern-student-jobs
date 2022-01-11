@@ -9,8 +9,8 @@ html, #root, body {
 }
 
 ::-webkit-scrollbar {
-  width: 3px; /* Remove scrollbar space */
-  background: #fff;
+  width: 5px; /* Remove scrollbar space */
+  background: transparent;
    /* Optional: just make scrollbar invisible */
 }
 ::-webkit-scrollbar-thumb {

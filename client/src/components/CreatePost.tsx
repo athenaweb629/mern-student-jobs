@@ -11,25 +11,21 @@ import RichEditor from './Editor/RichEditor';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '',
+	const initialState = { title: '',
 		description: [{
 			type: 'paragraph',
 			children: [
-		  { text: 'Write your job description!' },
+	  { text: 'Write your job description!' },
 			]
-	  }],
+		}],
 		qualificationLevel: '',
 		availability: '',
 		skills: '',
 		employeeLocation: '',
-		author: user?.email });
+		author: user?.email };
+	const [form, setForm] = useState(initialState);
 	const [createPost] = useCreatePostMutation();
-	const [input, setInput] = useState([{
-		type: 'paragraph',
-		children: [
-		  { text: 'Write your job description!' },
-		]
-	  }, ]);
+
 	const history = useHistory();
 	const dispatch = useDispatch();
 
@@ -39,6 +35,8 @@ const CreatePost = () => {
 		try {
 			const response = await createPost(form).unwrap();
 
+			setForm(initialState);
+			window.location.reload();
 			console.log(response);
 		} catch (error:any) {
 			console.log(error);

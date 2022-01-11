@@ -8,10 +8,7 @@ import Box from '@mui/material/Box';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
-import CodeIcon from '@mui/icons-material/Code';
-import LooksOneIcon from '@mui/icons-material/LooksOne';
-import LooksTwoIcon from '@mui/icons-material/LooksTwo';
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -21,7 +18,6 @@ const HOTKEYS = {
 	'mod+b': 'bold',
 	'mod+i': 'italic',
 	'mod+u': 'underline',
-	'mod+`': 'code'
 };
 
 const RichEditor = ({ form, setForm }) => {
@@ -48,18 +44,7 @@ const RichEditor = ({ form, setForm }) => {
 					<MarkButton format="underline">
 						<FormatUnderlinedIcon />
 					</MarkButton>
-					<MarkButton format="code">
-						<CodeIcon />
-					</MarkButton>
-					<BlockButton format="heading-one">
-						<LooksOneIcon />
-					</BlockButton>
-					<BlockButton format="heading-two">
-						<LooksTwoIcon />
-					</BlockButton>
-					<BlockButton format="block-quote">
-						<FormatQuoteIcon />
-					</BlockButton>
+
 					<BlockButton format="numbered-list">
 						<FormatListNumberedIcon />
 					</BlockButton>

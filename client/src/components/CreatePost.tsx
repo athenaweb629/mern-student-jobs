@@ -3,6 +3,7 @@ import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputL
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import ChipInput from 'material-ui-chip-input';
 
 import { logout } from '../features/auth/authSlice';
 import { useCreatePostMutation } from '../app/services/auth';
@@ -20,7 +21,7 @@ const CreatePost = () => {
 		}],
 		qualificationLevel: '',
 		availability: '',
-		skills: '',
+		skills: [''],
 		employeeLocation: '',
 		author: user?.email };
 	const [form, setForm] = useState(initialState);
@@ -37,7 +38,6 @@ const CreatePost = () => {
 
 			setForm(initialState);
 			window.location.reload();
-			console.log(response);
 		} catch (error:any) {
 			console.log(error);
 
@@ -53,7 +53,11 @@ const CreatePost = () => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 		console.log(event.target.value, event.target.name);
 	};
-	console.log(form);
+	const handleDeleteChip = (chip: any) => {
+		const filteredChips = form.skills.filter((item) => item !== chip);
+		setForm({ ...form, skills: filteredChips });
+	};
+	console.log(form.skills);
 	return (
 		<>
 			<Accordion sx={{ borderRadius: '20px !important', outline: 'none', boxShadow: '0px 0px 10px rgb(0 0 0 / 5%) ', }}>
@@ -65,8 +69,12 @@ const CreatePost = () => {
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
 						{/* <TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} /> */}
 						<RichEditor form={form} setForm={setForm} />
-						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
-
+						<ChipInput
+							sx={{ borderBottom: 1, borderColor: 'gray' }}
+							defaultValue={['react', 'js']}
+							onChange={(chip) => setForm({ ...form, skills: chip })}
+							onDelete={(chip) => handleDeleteChip(chip)}
+						/>
 						<FormControl>
 							<InputLabel id="availability" sx={{ marginLeft: '-12px' }}>Availability</InputLabel>
 							<Select

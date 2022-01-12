@@ -20,7 +20,7 @@
 		"axios": "^0.24.0",
 		"is-hotkey": "^0.2.0",
 		"jsonwebtoken": "^8.5.1",
-		"material-ui-chip-input": "^2.0.0-beta.2",
+		"material-ui-chip-input": "^1.1.0",
 		"material-ui-snackbar-provider": "^1.5.0",
 		"query-string": "^7.0.1",
 		"react": "^17.0.2",

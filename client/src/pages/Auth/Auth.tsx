@@ -4,7 +4,7 @@ import { LockOutlined, School as SchoolIcon, Business as BusinessIcon } from '@m
 import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation } from '../../app/services/auth';
+import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation, useConfirmAccountMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
 import CustomizedSnackbars from '../../components/Snackbar';
 import paths from '../../constants/paths';
@@ -29,6 +29,7 @@ const Auth = () => {
 	const [resetPassword] = useResetPasswordMutation();
 	const [login] = useLoginMutation();
 	const [register] = useRegisterMutation();
+	const [confirmAccount] = useConfirmAccountMutation();
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const token: any = useParams();
@@ -36,7 +37,7 @@ const Auth = () => {
 	const user = useAuth();
 
 	useEffect(() => {
-		if (location.pathname.includes('login')) {
+		if (location.pathname.includes('login') || location.pathname.includes('confirm-account')) {
 			setCurrentAuthState('login');
 		} else if (location.pathname.includes('register')) {
 			setCurrentAuthState('register');
@@ -46,6 +47,16 @@ const Auth = () => {
 			setCurrentAuthState('reset-password');
 		}
 	}, [location.pathname]);
+
+	useEffect(() => {
+		if (location.pathname.includes('confirm-account') && token) {
+			const x = confirmAccount(token.token);
+			console.log(x);
+			setOpen(true);
+			setSnackbarType('success');
+			setAlertMessage('Your account has been successfully confirmed, please log in');
+		}
+	}, [token]);
 
 	const handleUserType = (event: any, newUserType: any) => {
 		setForm((prevForm) => ({ ...prevForm, userType: newUserType }));

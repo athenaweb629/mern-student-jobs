@@ -10,6 +10,20 @@ export const getPosts = async (req: Request, res: Response) => {
   res.json({ posts });
 };
 
+export const getPostById = async (req: Request, res: Response) => {
+  const { postID } = req.params;
+  const post = await Post.find({ postID });
+
+  res.json({ post });
+};
+
+export const getPostsByAuthor = async (req: Request, res: Response) => {
+  const { author } = req.body;
+  const posts = await Post.find({ email: author });
+
+  res.json({ posts });
+};
+
 export const createPost = async (req: Request, res: Response) => {
   const {
     title,

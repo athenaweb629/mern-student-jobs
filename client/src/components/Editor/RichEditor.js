@@ -26,7 +26,7 @@ const RichEditor = ({ form, setForm }) => {
 	const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 	console.log(form);
 	return (
-		<Box borderBottom={1} borderColor="grey.600">
+		<Box borderBottom={1} borderColor="grey.600" fontFamily='sans-serif'>
 			<Slate
 				editor={editor}
 				value={form.description}

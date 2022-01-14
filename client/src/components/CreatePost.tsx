@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Box, TextField, Button, Accordion, AccordionSummary, InputLabel, Select, MenuItem, AccordionDetails, SelectChangeEvent, FormControl } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { logout } from '../features/auth/authSlice';
 
+import { logout } from '../features/auth/authSlice';
 import { useCreatePostMutation } from '../app/services/auth';
 import useAuth from '../hooks/useAuth';
+import RichEditor from './Editor/RichEditor';
 
 const CreatePost = () => {
 	const user = useAuth();
-	const [form, setForm] = useState({ title: '', description: '', qualificationLevel: '', availability: '', skills: '', employeeLocation: '', author: user?.email });
+	const [input, setInput] = useState('');
+	const [tags, setTags] = useState<string[]>([]);
+	const initialState = { title: '',
+		description: [{
+			type: 'paragraph',
+			children: [
+	  { text: 'Write your job description!' },
+			]
+		}],
+		qualificationLevel: '',
+		availability: '',
+		skills: tags,
+		employeeLocation: '',
+		author: user?.email };
+	const [form, setForm] = useState(initialState);
 	const [createPost] = useCreatePostMutation();
+
 	const history = useHistory();
 	const dispatch = useDispatch();
 
@@ -21,6 +38,9 @@ const CreatePost = () => {
 		try {
 			const response = await createPost(form).unwrap();
 
+			setForm(initialState);
+			setTags([]);
+			window.location.reload();
 			console.log(response);
 		} catch (error:any) {
 			console.log(error);
@@ -32,11 +52,27 @@ const CreatePost = () => {
 			}
 		}
 	};
+	useEffect(() => {
+		setForm({ ...form, skills: tags });
+	}, [tags]);
 
 	const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<string>): void => {
 		setForm({ ...form, [event.target.name]: event.target.value });
-		console.log(event.target.value, event.target.name);
 	};
+
+	const onKeyDown = (e: { preventDefault?: any; key?: any; }) => {
+		const { key } = e;
+		const trimmedInput = input.trim();
+		if (key === ',' && trimmedInput.length && !tags.includes(trimmedInput)) {
+		  e.preventDefault();
+		  setTags((prevState) => [...prevState, trimmedInput]);
+		  setInput('');
+		}
+	  };
+
+	  const deleteTag = (index: number) => {
+		setTags((prevState) => prevState.filter((tag, i) => i !== index));
+	  };
 
 	return (
 		<>
@@ -47,10 +83,14 @@ const CreatePost = () => {
 				<AccordionDetails>
 					<Box onSubmit={handleSubmit} component="form" sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', '& > :not(style)': { m: 1, width: '50%' } }} noValidate autoComplete="off">
 						<TextField label="Title" variant="standard" name="title" value={form.title} onChange={handleChange} />
-						<TextField label="Description" variant="standard" multiline rows={4} name="description" value={form.description} onChange={handleChange} />
-						<TextField label="Skills" variant="standard" name="skills" value={form.skills} onChange={handleChange} />
+						<RichEditor form={form} setForm={setForm} />
+						<Box sx={{ display: 'flex', gap: '5px' }}>
+							{tags.map((tag, index) => <Button key={tag}>{tag} <span style={{ marginLeft: '6px', marginTop: '2px' }} onClick={() => deleteTag(index)}><BackspaceIcon sx={{ fontSize: '14px' }} /></span></Button>)}
+						</Box>
+						<TextField label="Add Skills by seperated commas" variant="standard" name="skills" value={input} onKeyDown={onKeyDown} onChange={(e) => setInput(e.target.value)} />
+
 						<FormControl>
-							<InputLabel id="availability">Availability</InputLabel>
+							<InputLabel id="availability" sx={{ marginLeft: '-12px' }}>Availability</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
@@ -70,7 +110,7 @@ const CreatePost = () => {
 							</Select>
 						</FormControl>
 						<FormControl>
-							<InputLabel id="demo-simple-select-disabled-label">Employee Location</InputLabel>
+							<InputLabel id="demo-simple-select-disabled-label" sx={{ marginLeft: '-12px' }}>Employee Location</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"
@@ -86,7 +126,7 @@ const CreatePost = () => {
 							</Select>
 						</FormControl>
 						<FormControl>
-							<InputLabel id="qualification-level">Level</InputLabel>
+							<InputLabel id="qualification-level" sx={{ marginLeft: '-12px' }}>Level</InputLabel>
 							<Select
 								labelId="employee-Location"
 								id="employeeLocation"

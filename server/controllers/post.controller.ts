@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { randomUUID } from 'crypto';
 
 import Post from '../models/post.model';
+import User from '../models/user.model';
 
 export const getPosts = async (req: Request, res: Response) => {
   const posts = await Post.find({});
@@ -9,7 +10,21 @@ export const getPosts = async (req: Request, res: Response) => {
   res.json({ posts });
 };
 
-export const createPost = (req: Request, res: Response) => {
+export const getPostById = async (req: Request, res: Response) => {
+  const { postID } = req.params;
+  const post = await Post.find({ postID });
+
+  res.json({ post });
+};
+
+export const getPostsByAuthor = async (req: Request, res: Response) => {
+  const { author } = req.body;
+  const posts = await Post.find({ email: author });
+
+  res.json({ posts });
+};
+
+export const createPost = async (req: Request, res: Response) => {
   const {
     title,
     description,
@@ -21,6 +36,8 @@ export const createPost = (req: Request, res: Response) => {
   } = req.body;
 
   const postID = randomUUID();
+  await User.updateOne({ email: author }, { $push: { posts: postID } });
+
   const newPost = new Post({
     postID,
     title,

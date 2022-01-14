@@ -80,6 +80,9 @@ const userSchema = new mongoose.Schema({
     url: String,
     description: String,
   }],
+  posts: [{
+    type: String,
+  }],
 },
 { timestamps: true });
 

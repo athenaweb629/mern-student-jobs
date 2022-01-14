@@ -30,8 +30,10 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   author: {
-    type: String,
-    required: true
+    type: Object,
+    name: String,
+    mail: String,
+    required: true,
   },
   skills: [{
     type: String

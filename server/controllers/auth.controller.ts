@@ -168,10 +168,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
-export const doSomething = async (req: Request, res: Response) => {
-  res.send({ message: 'Authenticated!' });
-};
-
 export const updateController = async (req: Request, res: Response) => {
   const token = req.headers.authorization?.split(' ')[1];
   const decoded: any = jwt.decode(token);

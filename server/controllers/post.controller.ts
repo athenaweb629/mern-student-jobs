@@ -36,7 +36,7 @@ export const createPost = async (req: Request, res: Response) => {
   } = req.body;
 
   const postID = randomUUID();
-  await User.updateOne({ email: author }, { $push: { posts: postID } });
+  await User.updateOne({ email: author.mail }, { $push: { posts: postID } });
 
   const newPost = new Post({
     postID,

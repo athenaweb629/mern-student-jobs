@@ -5,11 +5,12 @@ export default {
 	CHAT: '/chat',
 	FORGOT_PASSWORD: '/forgot-password',
 	RESET_PASSWORD: '/reset-password/:token',
+	CONFIRM_ACCOUNT: '/confirm-account/:token',
 
 	api: {
 		LOGIN: '/user/login',
 		REGISTER: '/user/register',
-		CONFIRM_ACCOUNT: '/user/confirmAccount/:token',
+		CONFIRM_ACCOUNT: '/user/confirm-account',
 		AUTHORIZED_ACTION: '/user/authorizedAction',
 		RESEND_EMAIL: '/user/resend-email',
 		RESET_PASSWORD: '/user/reset-password',

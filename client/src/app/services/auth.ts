@@ -76,6 +76,12 @@ export const api = createApi({
 				body: email,
 			}),
 		}),
+		confirmAccount: builder.mutation<any, any>({
+			query: (token) => ({
+				url: `${paths.api.CONFIRM_ACCOUNT}/${token}`,
+				method: 'GET',
+			}),
+		}),
 		protected: builder.mutation<{ message: string }, void>({
 			query: () => paths.api.AUTHORIZED_ACTION,
 		}),
@@ -104,5 +110,6 @@ export const {
 	useGetPostsQuery,
 	useGetPostByIdQuery,
 	useResetPasswordMutation,
-	useForgotPasswordMutation
+	useForgotPasswordMutation,
+	useConfirmAccountMutation
 } = api;

@@ -10,10 +10,11 @@ const App = () => {
 
 	return (
 		<div>
-			{(location.pathname !== paths.LOGIN && location.pathname !== paths.REGISTER && location.pathname !== paths.FORGOT_PASSWORD && !location.pathname.startsWith(paths.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
+			{(!location.pathname.includes('confirm-account') && location.pathname !== paths.LOGIN && location.pathname !== paths.REGISTER && location.pathname !== paths.FORGOT_PASSWORD && !location.pathname.startsWith(paths.RESET_PASSWORD.slice(0, 14))) && <Navbar />}
 
 			<Switch>
 				<Route exact path={paths.LOGIN} component={Auth} />
+				<Route exact path={paths.CONFIRM_ACCOUNT} component={Auth} />
 				<Route exact path={paths.RESET_PASSWORD} component={Auth} />
 				<Route exact path={paths.REGISTER} component={Auth} />
 				<Route exact path={paths.FORGOT_PASSWORD} component={Auth} />

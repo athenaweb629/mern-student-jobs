@@ -7,6 +7,8 @@ import { useHistory } from 'react-router-dom';
 import { companyLogo } from '../assets/images';
 import ReadOnly from './Editor/ReadOnly';
 
+import useAuth from '../hooks/useAuth';
+
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
 	padding: theme.spacing(1),
@@ -19,6 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const JobOffer = ({ post }: any) => {
 	const history = useHistory();
+	const user = useAuth();
 
 	const initiateChat = (author: any) => {
 		history.push(`/chat?company=${author.name}`);
@@ -49,7 +52,7 @@ const JobOffer = ({ post }: any) => {
 						<ReadOnly description={post.description} />
 					</Box>
 				</CardContent>
-				{post.author.name && (
+				{post.author.name !== user?.name && (
 					<CardActions>
 						<Button sx={{ background: '#0058a2', textTransform: 'none', color: 'white', '&:hover': { color: '#0058a2' }, fontSize: '14px', padding: '2px 10px' }} onClick={() => initiateChat(post.author)}>
 							Apply to this job

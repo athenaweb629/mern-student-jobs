@@ -12,7 +12,7 @@ const ReadOnly = ({ description }) => {
 
 	return (
 		<Box p={1}>
-			<Slate editor={editor} value={description}>
+			<Slate editor={editor} value={description} onChange={() => {}}>
 				<Editable
 					readOnly
 					renderElement={renderElement}

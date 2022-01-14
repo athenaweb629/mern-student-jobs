@@ -51,7 +51,7 @@ const RichEditor = ({ form, setForm }) => {
 						<FormatListBulletedIcon />
 					</BlockButton>
 				</Toolbar>
-				<Box pl={1} style={{ height: '100px' }}>
+				<Box pl={1} style={{ minHeight: '100px' }}>
 					<Editable
 						renderElement={renderElement}
 						renderLeaf={renderLeaf}

@@ -3,6 +3,7 @@ import { Avatar, Button, CssBaseline, Paper, Box, Grid, Typography, ToggleButton
 import { LockOutlined, School as SchoolIcon, Business as BusinessIcon } from '@mui/icons-material';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 import { useLoginMutation, LoginRequest, useRegisterMutation, useResetPasswordMutation, useForgotPasswordMutation, useConfirmAccountMutation } from '../../app/services/auth';
 import { setCredentials } from '../../features/auth/authSlice';
@@ -14,6 +15,7 @@ import Input from './Input';
 export interface IErrorMessages { name: string[]; password: string[]; confirmPassword: string[]; email: string[] }
 type Param = 'name' | 'password' | 'confirmPassword' | 'email';
 type TypeState = 'login' | 'register' | 'forgot-password' | 'reset-password'
+const privateKey = '2204c45b-bcde-4bd1-bc65-f4ed65f53052';
 
 const Auth = () => {
 	const [currentAuthState, setCurrentAuthState] = useState<TypeState>('login');
@@ -81,6 +83,15 @@ const Auth = () => {
 
 			if (currentAuthState === 'register') {
 				userData = await register(form).unwrap();
+
+				axios.put('https://api.chatengine.io/users/', {
+					username: form.name,
+					secret: '123123'
+				}, {
+					headers: {
+						'PRIVATE-KEY': privateKey
+					}
+				});
 
 				setOpen(true);
 				setSnackbarType('success');

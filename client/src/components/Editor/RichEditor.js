@@ -24,7 +24,7 @@ const RichEditor = ({ form, setForm }) => {
 	const renderElement = useCallback((props) => <Element {...props} />, []);
 	const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 	const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-	console.log(form);
+
 	return (
 		<Box borderBottom={1} borderColor="grey.600" fontFamily='sans-serif'>
 			<Slate
@@ -44,7 +44,6 @@ const RichEditor = ({ form, setForm }) => {
 					<MarkButton format="underline">
 						<FormatUnderlinedIcon />
 					</MarkButton>
-
 					<BlockButton format="numbered-list">
 						<FormatListNumberedIcon />
 					</BlockButton>
@@ -52,11 +51,11 @@ const RichEditor = ({ form, setForm }) => {
 						<FormatListBulletedIcon />
 					</BlockButton>
 				</Toolbar>
-				<Box pl={1}>
+				<Box pl={1} style={{ height: '100px' }}>
 					<Editable
 						renderElement={renderElement}
 						renderLeaf={renderLeaf}
-						placeholder="Enter some rich text…"
+						placeholder="Write your job description"
 						spellCheck
 						autoFocus
 						onKeyDown={(event) => {

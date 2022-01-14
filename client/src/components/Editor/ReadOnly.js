@@ -9,9 +9,10 @@ const ReadOnly = ({ description }) => {
 	const renderElement = useCallback((props) => <Element {...props} />, []);
 	const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 	const editor = useMemo(() => withReact(createEditor()), []);
+
 	return (
 		<Box p={1}>
-			<Slate editor={editor} value={description} onChange={(value) => console.log(value)}>
+			<Slate editor={editor} value={description}>
 				<Editable
 					readOnly
 					renderElement={renderElement}

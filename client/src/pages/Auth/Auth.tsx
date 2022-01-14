@@ -50,8 +50,8 @@ const Auth = () => {
 
 	useEffect(() => {
 		if (location.pathname.includes('confirm-account') && token) {
-			const x = confirmAccount(token.token);
-			console.log(x);
+			confirmAccount(token.token);
+
 			setOpen(true);
 			setSnackbarType('success');
 			setAlertMessage('Your account has been successfully confirmed, please log in');

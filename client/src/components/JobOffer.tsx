@@ -5,7 +5,6 @@ import { styled } from '@mui/material/styles';
 import { useHistory } from 'react-router-dom';
 
 import { companyLogo } from '../assets/images';
-import useAuth from '../hooks/useAuth';
 import ReadOnly from './Editor/ReadOnly';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,13 +19,10 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const JobOffer = ({ post }: any) => {
 	const history = useHistory();
-	const user = useAuth();
 
 	const initiateChat = (author: any) => {
-		history.push(`/chat?userOneName=${user?.email}&userTwoName=${author}`);
+		history.push(`/chat?company=${author.name}`);
 	};
-
-	console.log(post);
 
 	return (
 		<>
@@ -42,7 +38,7 @@ const JobOffer = ({ post }: any) => {
 							<Typography variant="subtitle1" sx={{ color: 'text.secondary', margin: '0 10px' }}>20 hours ago</Typography>
 						</Box>
 						<Box display="flex" alignItems="center" justifyContent="flex-start">
-							<Typography sx={{ color: 'text.primary', margin: '0 10px' }}> at {post.author}</Typography>
+							<Typography sx={{ color: 'text.primary', margin: '0 10px' }}> at {post.author.name}</Typography>
 
 							<Typography variant="subtitle1" sx={{ margin: '0 10px' }}>Company / IT</Typography>
 						</Box>
@@ -51,11 +47,9 @@ const JobOffer = ({ post }: any) => {
 				<CardContent sx={{ textAlign: 'start', padding: 0, margin: '10px 0' }}>
 					<Box sx={{ maxHeight: '300px', overflowY: 'auto', }}>
 						<ReadOnly description={post.description} />
-
 					</Box>
 				</CardContent>
-				{/* <CardMedia component="img" height="400" image={images[i]} alt="green iguana" /> */}
-				{user?.email !== post.author && (
+				{post.author.name && (
 					<CardActions>
 						<Button sx={{ background: '#0058a2', textTransform: 'none', color: 'white', '&:hover': { color: '#0058a2' }, fontSize: '14px', padding: '2px 10px' }} onClick={() => initiateChat(post.author)}>
 							Apply to this job

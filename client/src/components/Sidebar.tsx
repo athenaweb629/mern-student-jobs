@@ -22,8 +22,6 @@ const Sidebar = () => {
 		if (location.pathname.includes('chat')) setSelectedIndex(3);
 	}, [location.pathname]);
 
-	console.log(selectedIndex);
-
 	return (
 		<Box sx={{ padding: 2 }}>
 			{menu.map(({ text, icon, link }, index) => (
@@ -39,7 +37,7 @@ const Sidebar = () => {
 				>
 					<ListItemIcon>
 						{index === 3 ? (
-							<Badge badgeContent={5} color="primary" overlap="circular">
+							<Badge badgeContent={0} color="primary" overlap="circular">
 								<img src={icon} width="40" height="40" />
 							</Badge>
 						) : <img src={icon} width="40" height="40" />}

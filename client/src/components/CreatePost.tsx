@@ -14,18 +14,23 @@ const CreatePost = () => {
 	const user = useAuth();
 	const [input, setInput] = useState('');
 	const [tags, setTags] = useState<string[]>([]);
-	const initialState = { title: '',
+	const initialState = {
+		title: '',
 		description: [{
 			type: 'paragraph',
 			children: [
-	  { text: 'Write your job description!' },
+	 		 { text: '' },
 			]
 		}],
 		qualificationLevel: '',
 		availability: '',
 		skills: tags,
 		employeeLocation: '',
-		author: user?.email };
+		author: {
+			name: user?.name,
+			mail: user?.email,
+		}
+	};
 	const [form, setForm] = useState(initialState);
 	const [createPost] = useCreatePostMutation();
 
@@ -36,12 +41,11 @@ const CreatePost = () => {
 		event.preventDefault();
 
 		try {
-			const response = await createPost(form).unwrap();
+			await createPost(form).unwrap();
 
 			setForm(initialState);
 			setTags([]);
 			window.location.reload();
-			console.log(response);
 		} catch (error:any) {
 			console.log(error);
 

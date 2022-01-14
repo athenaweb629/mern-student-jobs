@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ChatEngine } from 'react-chat-engine';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
@@ -24,15 +24,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Chat = () => {
 	const { search } = useLocation();
-	let { userOneName, userTwoName, } = queryString.parse(search);
-	const user = useAuth();
-
-	if (!userOneName) {
-		userOneName = user.email;
-	}
+	const { company } = queryString.parse(search);
+	const { name } = useAuth();
 
 	const getOrCreateChatUser = async (username) => {
-		if (userOneName) {
+		if (username) {
 			axios.put('https://api.chatengine.io/users/', {
 				username,
 				secret: '123123'
@@ -45,14 +41,15 @@ const Chat = () => {
 	};
 
 	const getOrCreateChat = async () => {
-		if (userTwoName) {
+		if (company) {
 			axios.put('https://api.chatengine.io/chats/', {
-				usernames: [userOneName, userTwoName],
+				usernames: [name, company],
+				title: `${company} & {name}`,
 				is_direct_chat: true
 			}, {
 				headers: {
 					'Project-ID': projectId,
-					'User-Name': userOneName,
+					'User-Name': name,
 					'User-Secret': 123123,
 				}
 			});
@@ -60,7 +57,7 @@ const Chat = () => {
 			axios.put('https://api.chatengine.io/chats/', {
 				headers: {
 					'Project-ID': projectId,
-					'User-Name': userOneName,
+					'User-Name': name,
 					'User-Secret': 123123,
 				}
 			});
@@ -68,23 +65,18 @@ const Chat = () => {
 	};
 
 	useEffect(() => {
-		getOrCreateChatUser(userOneName)
-			.then((data) => {
-				console.log(data);
-			});
+		Promise.all([getOrCreateChatUser(name), getOrCreateChatUser(company)])
+			.then(() => {
+				console.log(`Users ${name} and ${company} have been created.`);
 
-		getOrCreateChatUser(userTwoName)
-			.then((data) => {
-				console.log(data);
-			});
-
-		getOrCreateChat()
-			.then((data) => {
-				console.log(data);
+				getOrCreateChat()
+					.then(() => {
+						console.log('Chat has been created');
+					});
 			});
 	}, []);
 
-	if (!userOneName) return null;
+	if (!name) return null;
 
 	return (
 		<Box sx={{ flexGrow: 1, m: '30px' }}>
@@ -96,7 +88,7 @@ const Chat = () => {
 					<div style={{ display: 'flex', justifyContent: 'center', fontFamily: 'ProximaNovaSemibold' }}>
 						<ChatEngine
 							height='80vh'
-							userName={userOneName}
+							userName={name}
 							userSecret='123123'
 							projectID={projectId}
 							renderNewChatForm={() => null}

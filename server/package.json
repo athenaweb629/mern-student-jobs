@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.ts"
   },
-  "author": "",
+  "author": "Robert Williams",
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
